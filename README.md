@@ -51,6 +51,26 @@ The creative stage proposes several thoughts. The logic stage marks each
 deterministic stub; a Mistral adapter can replace it later without changing
 the review contract.
 
+### Decision meanings
+
+- `ACT` — the proposal has a rationale and provenance and is ready for an
+  explicitly approved next step.
+- `KEEP` — the proposal is interesting but needs evidence, a clearer rationale,
+  or revision before action.
+- `REJECT` — the proposal is empty or fails a basic validity gate.
+
+The terminal loop does not execute tools, change files, or publish anything.
+That boundary stays in place when model adapters are added.
+
+For a local editable install:
+
+```bash
+python3 -m pip install -e .
+humind "design a small PHP product"
+```
+
+Use `--no-colour` when sending output to logs or automated tests.
+
 Run the tests:
 
 ```bash
