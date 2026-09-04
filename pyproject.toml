@@ -10,3 +10,6 @@ requires-python = ">=3.10"
 
 [tool.setuptools.packages.find]
 include = ["humind*"]
+
+[project.scripts]
+humind = "humind.terminal:main"

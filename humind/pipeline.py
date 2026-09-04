@@ -1,6 +1,6 @@
 """Deterministic scaffolding for Hu-Mind's creative/reviewer pipeline."""
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Iterable
 
 
@@ -21,6 +21,16 @@ class Review:
     score: float
     accepted: bool
     issues: tuple[str, ...] = ()
+
+    @property
+    def decision(self) -> str:
+        """Human-readable next step for the terminal operator."""
+
+        if self.accepted:
+            return "act"
+        if self.score > 0:
+            return "keep"
+        return "reject"
 
 
 def review_candidates(
@@ -46,7 +56,7 @@ def review_candidates(
             issues.append("missing rationale")
         if not candidate.sources:
             issues.append("no provenance supplied")
-        score = 1.0 if not issues else max(0.0, 1.0 - 0.3 * len(issues))
+        score = 0.0 if "empty proposal" in issues else (1.0 if not issues else max(0.0, 1.0 - 0.3 * len(issues)))
         results.append(
             Review(
                 candidate=candidate,

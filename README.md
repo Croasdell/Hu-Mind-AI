@@ -36,6 +36,21 @@ humind/
 tests/              deterministic tests
 ```
 
+## Terminal prototype
+
+Launch the yin-yang-inspired thought loop:
+
+```bash
+python3 -m humind "build a useful PHP product"
+# or, after installing the package:
+humind
+```
+
+The creative stage proposes several thoughts. The logic stage marks each
+`ACT`, `KEEP`, or `REJECT`. The current generator is deliberately a small
+deterministic stub; a Mistral adapter can replace it later without changing
+the review contract.
+
 Run the tests:
 
 ```bash
