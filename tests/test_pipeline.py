@@ -25,6 +25,7 @@ class PipelineTests(unittest.TestCase):
         reviews = review_candidates([Candidate("Ship", "Test first", ("brief",)), Candidate("", "", ())])
         self.assertEqual(reviews[0].decision, "act")
         self.assertEqual(reviews[1].decision, "reject")
+        self.assertEqual(dict(reviews[0].score_breakdown)["provenance"], 1.0)
         self.assertIn("HU-MIND AI", splash(colour=False))
         self.assertIn("ACT", run_once("a prototype", colour=False))
 

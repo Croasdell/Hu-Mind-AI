@@ -11,6 +11,11 @@ class Candidate:
     text: str
     rationale: str = ""
     sources: tuple[str, ...] = ()
+    assumptions: tuple[str, ...] = ()
+    evidence_needed: tuple[str, ...] = ()
+    risks: tuple[str, ...] = ()
+    proposed_action: str = ""
+    confidence: float = 0.0
 
 
 @dataclass(frozen=True)
@@ -21,6 +26,7 @@ class Review:
     score: float
     accepted: bool
     issues: tuple[str, ...] = ()
+    score_breakdown: tuple[tuple[str, float], ...] = ()
 
     @property
     def decision(self) -> str:
@@ -63,6 +69,12 @@ def review_candidates(
                 score=score,
                 accepted=score >= minimum_score and not issues,
                 issues=tuple(issues),
+                score_breakdown=(
+                    ("usefulness", 1.0 if candidate.text.strip() else 0.0),
+                    ("clarity", 1.0 if candidate.rationale.strip() else 0.0),
+                    ("provenance", 1.0 if candidate.sources else 0.0),
+                    ("confidence", min(1.0, max(0.0, candidate.confidence))),
+                ),
             )
         )
     return results

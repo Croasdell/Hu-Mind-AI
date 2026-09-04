@@ -71,6 +71,22 @@ humind "design a small PHP product"
 
 Use `--no-colour` when sending output to logs or automated tests.
 
+### Interactive slash commands
+
+When `humind` is started without a brief, the prompt supports:
+
+```text
+/help       show available commands
+/review     repeat the latest thought review
+/history    list briefs explored in this session
+/exit       leave Hu-Mind
+```
+
+Each candidate now carries structured fields for rationale, assumptions,
+evidence needed, risks, proposed action, confidence, and provenance. Reviews
+also expose separate usefulness, clarity, provenance, and confidence scores so
+future model adapters can be evaluated instead of trusted blindly.
+
 Run the tests:
 
 ```bash
