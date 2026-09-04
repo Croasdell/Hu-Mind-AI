@@ -32,9 +32,19 @@ review, provenance, and human approval for consequential actions.
 ```text
 humind/
   __init__.py       package version
+  __main__.py       python -m humind entry point
   pipeline.py       candidate and review data structures
-tests/              deterministic tests
+  terminal.py       splash screen and interactive loop
+tests/              deterministic regression tests
+pyproject.toml      package metadata and humind command
 ```
+
+## Current status
+
+The terminal loop is working locally with a deterministic placeholder
+creative engine. The review contract is ready for model adapters, but no
+external model is downloaded or called yet. Hu-Mind does not currently edit
+files, execute shell commands, or publish actions.
 
 ## Terminal prototype
 
@@ -107,3 +117,6 @@ before commercial deployment.
 - Add evidence and citation tracking.
 - Add evaluation sets for factuality, usefulness, and refusal/safety behavior.
 - Add optional tool execution only behind explicit user approval and sandboxing.
+
+The next build should connect the creative adapter first, then run it through
+the existing independent review gate and evaluation tests.
