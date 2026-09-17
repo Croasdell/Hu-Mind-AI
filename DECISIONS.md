@@ -104,3 +104,19 @@ append-only; later decisions may supersede but do not erase earlier reasoning.
 - **Falsification condition:** revise the representation if claim-link checking
   does not reduce unsupported-claim and false-consensus rates under blinded
   evaluation, or if its operational cost outweighs the measured benefit.
+
+## D-0008 — Preregister experiments in a tamper-evident journal
+
+- **Status:** accepted for programme evidence
+- **Decision:** Freeze protocol, dataset, configuration, metrics, and decision
+  criteria before a run. Record plans and results in a hash-chained journal;
+  require contradictory and aborted outcomes to cite a failure record; publish
+  authenticated head checkpoints to independent partners.
+- **Reason:** the living plan must respond to evidence without permitting
+  hindsight criteria, suppressed negative results, or silent history changes.
+- **Limit:** a local hash chain cannot detect deletion of its tail without an
+  externally retained checkpoint. Prototype HMAC checkpoints are not the final
+  multinational trust mechanism.
+- **Affected hypotheses/gates:** H1-H6, Gates 0-6.
+- **Reconsider when:** consortium key custody is designed; migrate to threshold
+  signatures and multiple independently operated archives.

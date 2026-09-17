@@ -116,9 +116,10 @@ lawful background IP without making compliance unverifiable.
 1. Publish the concept note and technical programme.
 2. Recruit three to five research partners for a non-binding working group.
 3. Agree shared experiments and failure-reporting rules.
-4. Run a distributed replication before pooling major capital.
-5. Form the consortium and independent oversight function.
-6. Establish a joint facility only after governance and workload evidence exist.
-7. Seek government participation after a credible scientific collaboration is
+4. Give independent partner archives authenticated journal checkpoints so no
+   single operator can delete an inconvenient tail of the research record.
+5. Run a distributed replication before pooling major capital.
+6. Form the consortium and independent oversight function.
+7. Establish a joint facility only after governance and workload evidence exist.
+8. Seek government participation after a credible scientific collaboration is
    operating, rather than presenting a treaty as the first deliverable.
-

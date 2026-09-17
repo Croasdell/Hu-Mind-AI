@@ -12,6 +12,9 @@ See also [FAILURE_LESSONS.md](FAILURE_LESSONS.md),
 [COOPERATION_CHARTER.md](COOPERATION_CHARTER.md), and
 [DECISIONS.md](DECISIONS.md). The air-gapped deployment boundary and its
 remaining evidence checklist are in [OFFLINE_DEPLOYMENT.md](OFFLINE_DEPLOYMENT.md).
+The preregistered falsification matrix and tamper-evident result process are in
+[EXPERIMENTS.md](EXPERIMENTS.md).
+The initial partner invitation is [CONSORTIUM_CONCEPT_NOTE.md](CONSORTIUM_CONCEPT_NOTE.md).
 
 The name means **Human Mind AI**. The design is inspired by complementary
 creative and analytical thinking—not by copying any proprietary service.
@@ -59,6 +62,7 @@ for a Kimi/OpenAI dual-review experiment:
 - exact-action consensus with confidence, evidence, and veto checks;
 - one bounded redacted peer-critique round when initial reviews disagree;
 - content-addressed local evidence packs with strict claim-link verification;
+- hash-chained experiment plans/results with independently anchorable heads;
 - a human approval and action-allowlist gate;
 - Kimi and OpenAI API adapters that are inactive until configured;
 - a manifest-verified local provider that rejects non-allowlisted endpoints;

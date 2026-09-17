@@ -14,6 +14,7 @@ and simple-voting baselines at an acceptable cost and latency?
 - Human approval and action allowlisting.
 - Offline mocks and regression tests.
 - An append-only audit format.
+- Hash-chained plan/result records and externally anchorable journal heads.
 
 Exit criterion: all safety invariants have tests and no component can execute an
 action directly.

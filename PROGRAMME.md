@@ -142,6 +142,7 @@ must earn its place by outperforming a simpler baseline.
 - red teams independent of the builders;
 - hidden evaluation sets and contamination checks;
 - a public failure register for hypotheses, incidents, and negative results.
+- preregistered plans and tamper-evident results mapped to H1-H6;
 
 ### D. Offline systems and hardware
 
@@ -275,22 +276,34 @@ Every material change is recorded in `DECISIONS.md` with:
 - decision owner and reviewers;
 - date for reconsideration.
 
+Architecture evidence follows `EXPERIMENTS.md`: plans freeze their protocol,
+dataset, configuration, metrics, and decision criteria before execution;
+results enter a hash-chained journal and cite negative outcomes in the failure
+register. Partner-held checkpoints make deletion or rewriting detectable.
+
 The top-down programme is reviewed after each gate, major negative result,
 incident, material model change, or new partner. Historical versions remain in
 Git so the project cannot silently rewrite why a decision was made.
 
 ## 10. Immediate next programme increment
 
-1. Convert all runtime providers to localhost-capable endpoints and add a strict
-   offline mode that rejects non-loopback addresses.
-2. Create a signed model manifest schema covering weights, licence,
-   quantisation, hash, source, runtime, and hardware requirements.
-3. Define the first 100-task evaluation before live model testing.
-4. Implement provider-loss, malformed-output, false-consensus, and shutdown
-   tests.
-5. Produce a measured two-GPU bill of materials only after the workload tests
-   exist.
-6. Prepare a two-page consortium concept note based on `COOPERATION_CHARTER.md`.
+Completed foundations include the loopback-by-default local provider, signed
+model manifests, deterministic 100-task infrastructure harness, injected
+provider-failure tests, bounded critique, strict evidence packs, and the
+preregistered experiment journal. These are software-foundation results, not a
+passed Gate 1 or evidence of AGI.
+
+The next increment is:
+
+1. select two genuinely different open-weight models after licence and hardware
+   review, then create their production manifests;
+2. freeze real E1 and E5 capability datasets and preregister their plans;
+3. deploy both model servers on an egress-denied host or isolated LAN;
+4. collect correctness, false-consensus, latency, memory, energy, and failure
+   data rather than buying larger hardware on estimates alone;
+5. reproduce the run on a second machine under an independent operator;
+6. use `CONSORTIUM_CONCEPT_NOTE.md` to recruit the first three to five research
+   partners and independent journal-checkpoint holders.
 
 ## Evidence base
 
@@ -305,4 +318,3 @@ Git so the project cannot silently rewrite why a decision was made.
 - The Antarctic Treaty establishes peaceful use, scientific cooperation,
   exchange of results, and inspection as international principles:
   [Antarctic Treaty overview](https://www.ats.aq/e/antarctictreaty.html?lang=en).
-
