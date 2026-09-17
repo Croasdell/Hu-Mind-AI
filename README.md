@@ -10,7 +10,8 @@ technical architecture to stage gates, historical failure lessons, offline
 hardware, funding, and a possible international cooperative research facility.
 See also [FAILURE_LESSONS.md](FAILURE_LESSONS.md),
 [COOPERATION_CHARTER.md](COOPERATION_CHARTER.md), and
-[DECISIONS.md](DECISIONS.md).
+[DECISIONS.md](DECISIONS.md). The air-gapped deployment boundary and its
+remaining evidence checklist are in [OFFLINE_DEPLOYMENT.md](OFFLINE_DEPLOYMENT.md).
 
 The name means **Human Mind AI**. The design is inspired by complementary
 creative and analytical thinking—not by copying any proprietary service.
@@ -58,6 +59,7 @@ for a Kimi/OpenAI dual-review experiment:
 - exact-action consensus with confidence, evidence, and veto checks;
 - a human approval and action-allowlist gate;
 - Kimi and OpenAI API adapters that are inactive until configured;
+- a manifest-verified local provider that rejects non-allowlisted endpoints;
 - offline mocks, audit support, and regression tests.
 
 Hu-Mind does not currently edit files, execute shell commands, or publish
@@ -135,6 +137,18 @@ python3 -m humind --dual-demo "evaluate a reasoning architecture"
 The demonstration deliberately reaches model consensus but leaves execution
 blocked because human approval has not been supplied.
 
+Validate the fixed 100-task orchestration and report path:
+
+```bash
+python3 -m humind --benchmark-smoke
+```
+
+This is a known-answer infrastructure test, clearly marked
+`"infrastructure_only": true`; its score must not be reported as model or AGI
+performance. Gate 1 still requires two real local models, a frozen capability
+dataset, physical/network isolation, failure tests, and independent
+reproduction.
+
 ## Scope and originality
 
 This repository will use public model weights and documented interfaces. It
@@ -144,7 +158,8 @@ before commercial deployment.
 
 ## Roadmap
 
-- Validate the Kimi and OpenAI adapters against their live APIs.
+- Connect two distinct local models through verified manifests.
+- Reproduce the deployment under an egress-deny firewall on a second machine.
 - Add a bounded second critique-and-revision round.
 - Add claim-linked evidence and citation verification.
 - Build the 100-task evaluation set and single-model baselines.

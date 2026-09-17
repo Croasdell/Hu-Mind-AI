@@ -41,4 +41,18 @@ append-only; later decisions may supersede but do not erase earlier reasoning.
   and decision rules before pursuing a capital-intensive joint venture.
 - **Reconsider when:** partner feedback or legal review identifies a more viable
   institutional structure.
+## D-0004 — Enforce the offline provider boundary in code
 
+- **Status:** accepted for the Gate-1 prototype
+- **Decision:** Local model providers default to loopback-only endpoints and
+  require a valid HMAC-SHA256 manifest plus matching artifact hashes and an
+  approved role before use. Host firewall and physical isolation remain
+  mandatory because an application allowlist cannot prove an air gap.
+- **Evidence:** provider construction and tamper cases are covered by regression
+  tests; a 100-task deterministic run verifies the measurement path.
+- **Limit:** HMAC distributes a shared secret and is not the final consortium
+  trust model. Migrate to public-key or threshold signatures before
+  multi-institution provisioning.
+- **Affected hypotheses/gates:** H6, Gate 0, Gate 1.
+- **Reconsider when:** the first external research partner joins or a production
+  provisioning appliance is selected.

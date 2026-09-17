@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 from .action_gate import ActionGate
+from .benchmark import DeterministicBenchmarkReviewer, run_benchmark
 from .deliberation import DeliberationEngine
 from .pipeline import Candidate, Review, review_candidates
 from .providers.mock import MockReviewer
@@ -133,7 +134,19 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("brief", nargs="?", help="brief to explore")
     parser.add_argument("--no-colour", action="store_true")
     parser.add_argument("--dual-demo", action="store_true", help="run the offline dual-review demo")
+    parser.add_argument(
+        "--benchmark-smoke",
+        action="store_true",
+        help="run the 100-task deterministic infrastructure benchmark",
+    )
     args = parser.parse_args(argv)
+    if args.benchmark_smoke:
+        engine = DeliberationEngine(
+            DeterministicBenchmarkReviewer("fixture-left"),
+            DeterministicBenchmarkReviewer("fixture-right"),
+        )
+        print(run_benchmark(engine).to_json())
+        return 0
     if args.dual_demo:
         if not args.brief:
             parser.error("--dual-demo requires a brief")

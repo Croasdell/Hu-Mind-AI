@@ -11,11 +11,14 @@ class ProviderError(RuntimeError):
     pass
 
 
-def post_json(url: str, api_key: str, payload: dict, *, timeout: float = 60.0) -> dict:
+def post_json(url: str, api_key: str | None, payload: dict, *, timeout: float = 60.0) -> dict:
+    headers = {"Content-Type": "application/json"}
+    if api_key:
+        headers["Authorization"] = f"Bearer {api_key}"
     request = Request(
         url,
         data=json.dumps(payload).encode("utf-8"),
-        headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
+        headers=headers,
         method="POST",
     )
     try:
@@ -23,4 +26,3 @@ def post_json(url: str, api_key: str, payload: dict, *, timeout: float = 60.0) -
             return json.loads(response.read().decode("utf-8"))
     except (HTTPError, URLError, TimeoutError, json.JSONDecodeError) as exc:
         raise ProviderError(f"provider request failed: {exc}") from exc
-

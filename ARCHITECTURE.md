@@ -123,6 +123,11 @@ scanned, and transferred through a controlled provisioning process, then served
 through separate loopback or isolated-LAN endpoints. The orchestrator must be
 able to reject any non-local endpoint when strict offline mode is enabled.
 
+The implemented `OfflineNetworkPolicy` defaults to loopback only and rejects
+public endpoints before a local provider can be constructed. Explicit isolated
+hosts or IP networks can be allowlisted. This application check is defence in
+depth: deployment firewall rules and physical isolation remain authoritative.
+
 The repository currently contains Kimi and OpenAI cloud adapters for comparative
 development work. They are not the production boundary and must not be enabled
 inside the reference environment. The next provider layer will target local
@@ -137,6 +142,11 @@ Every local model requires a manifest containing:
 - quantisation and inference runtime;
 - expected memory and hardware requirements;
 - evaluation status and approved roles.
+
+The local adapter now verifies the manifest signature, artifact hashes, role,
+and endpoint boundary before making inference requests. The prototype signing
+scheme is HMAC-SHA256; multi-institution operation requires a later migration
+to public-key or threshold signing with protected keys.
 
 No runtime secrets or external provider credentials belong in the air-gapped
 environment.

@@ -20,6 +20,12 @@ action directly.
 
 ## Phase 1: local model experiment
 
+Implementation status: the local protocol adapter, loopback-by-default endpoint
+policy, signed-manifest verifier, and deterministic 100-task reporting harness
+exist. This is plumbing evidence only. Two real models, host-level isolation,
+failure injection, capability tasks, resource measurements, and independent
+reproduction remain open.
+
 - Add a strict offline provider that accepts only loopback or approved isolated
   network endpoints.
 - Serve two distinct open-weight models locally. Begin with models that fit the
