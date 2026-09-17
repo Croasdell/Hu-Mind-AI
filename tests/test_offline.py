@@ -9,6 +9,7 @@ from humind.manifest import ManifestError, load_and_verify_manifest, sign_manife
 from humind.offline import OfflineNetworkPolicy, OfflinePolicyError
 from humind.providers.http import ProviderError
 from humind.providers.local import InferenceBudget, LocalReviewer
+from humind.schemas import ModelReview, PeerReviewSummary, Verdict
 
 
 class OfflinePolicyTests(unittest.TestCase):
@@ -124,6 +125,22 @@ class ManifestAndLocalProviderTests(unittest.TestCase):
         with patch("humind.providers.local.post_json", side_effect=ProviderError("provider unavailable")):
             with self.assertRaisesRegex(ProviderError, "provider unavailable"):
                 self.reviewer().review("objective", type("Probe", (), {"__dict__": {}})())
+
+    def test_local_revision_transmits_only_redacted_positions(self):
+        reviewer = self.reviewer()
+        own = PeerReviewSummary.from_review(
+            ModelReview("local-a", Verdict.REVISE, "private own narrative", claims=("claim-a",))
+        )
+        peer = PeerReviewSummary.from_review(
+            ModelReview("local-b", Verdict.REJECT, "private peer narrative", risks=("risk-b",))
+        )
+        with patch("humind.providers.local.post_json", return_value=self.valid_response()) as request:
+            reviewer.revise("objective", type("Probe", (), {"__dict__": {}})(), own, peer)
+        encoded = request.call_args.args[2]["messages"][1]["content"]
+        self.assertIn("claim-a", encoded)
+        self.assertIn("risk-b", encoded)
+        self.assertNotIn("private own narrative", encoded)
+        self.assertNotIn("private peer narrative", encoded)
 
     def test_elapsed_time_budget_fails_closed(self):
         budget = InferenceBudget(timeout_seconds=0.5)

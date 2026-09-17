@@ -51,6 +51,13 @@ Provider diversity may reduce correlated mistakes, but it does not guarantee
 independence or truth. That is an empirical question the evaluation programme
 must measure.
 
+If the independent reviews do not agree, local providers may perform exactly
+one peer-critique round. Each receives the other's structured verdict, canonical
+action and fingerprint, claims, evidence, risks, vetoes, and confidence. It
+does not receive the other's free-form summary, assumptions, hidden reasoning,
+or model state. Reviewers are instructed to maintain disagreement when the
+evidence warrants it; convergence is not itself rewarded.
+
 ### 4. Consensus gate
 
 The deterministic gate, rather than either model, decides whether consensus
@@ -64,6 +71,10 @@ exists. Approval currently requires:
 
 Failure produces a request for evidence or escalation. It never silently picks
 one model as the winner.
+
+Reviewer identities are checked against the configured providers in every
+round. A first-round critical veto is sticky: a later model revision cannot
+erase it or authorize action. Resolution requires human evidence review.
 
 ### 5. Human and action gate
 
@@ -94,11 +105,13 @@ Kimi review        OpenAI review
              |
         no --+-- yes
         |         |
- evidence/human   human approval
- escalation       + allowlist
-                       |
-                       v
-              authorization object
+  one redacted    human approval
+  critique round  + allowlist
+        |              |
+        v              v
+ consensus again  authorization object
+        |
+ unresolved -> evidence/human escalation
 ```
 
 ## Threat model

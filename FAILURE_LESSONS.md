@@ -18,6 +18,19 @@ then turn that result into a Hu-Mind test.
 | Unbounded autonomous agents | Demonstrates long-horizon tool use | Compounding errors, prompt injection, uncontrolled side effects, and unclear accountability | Offline sandbox, budgets, allowlists, human veto, rollback | Interruption, shutdown, injection, and action-precision tests |
 | Anthropomorphic cognitive metaphors | Inspires modular designs and interpretable roles | Metaphor can be mistaken for neuroscience or evidence | Treat Jungian and hemispheric language as design metaphors only | Remove or replace the metaphor; retain components only if metrics improve |
 
+## Current architecture risk — deliberative conformity
+
+- **Failure pattern:** reviewers that initially disagree may converge after
+  seeing a peer position because agreement is implicitly rewarded, not because
+  evidence improved.
+- **Lesson for Hu-Mind:** preserve an independent first round, expose only
+  bounded structured positions, permit one revision round, retain vetoes, and
+  measure false-consensus separately from task completion.
+- **Falsification test:** compare independent-only review, peer critique, and a
+  simple voting baseline on adversarial shared-misconception cases. Remove the
+  critique round if it increases false consensus without a preregistered net
+  benefit.
+
 ## Project failure record template
 
 Every abandoned or materially revised hypothesis gets an entry:
@@ -52,4 +65,3 @@ Open questions:
 
 Each risk must be converted into an owned experiment or governance control
 before the relevant programme gate can pass.
-

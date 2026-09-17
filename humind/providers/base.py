@@ -3,10 +3,10 @@
 from __future__ import annotations
 
 import json
-from typing import Any, Protocol
+from typing import Any, Protocol, runtime_checkable
 
 from .http import ProviderError
-from ..schemas import ModelReview, ProposedAction, ThoughtProbe, Verdict
+from ..schemas import ModelReview, PeerReviewSummary, ProposedAction, ThoughtProbe, Verdict
 
 
 class ReviewerProvider(Protocol):
@@ -14,6 +14,20 @@ class ReviewerProvider(Protocol):
 
     def review(self, objective: str, probe: ThoughtProbe) -> ModelReview:
         """Return a structured review without executing any proposed action."""
+
+
+@runtime_checkable
+class RevisionProvider(Protocol):
+    name: str
+
+    def revise(
+        self,
+        objective: str,
+        probe: ThoughtProbe,
+        own_position: PeerReviewSummary,
+        peer_position: PeerReviewSummary,
+    ) -> ModelReview:
+        """Reassess using bounded structured positions, never private reasoning."""
 
 
 def review_from_json(provider: str, content: str) -> ModelReview:
@@ -64,4 +78,11 @@ claims, assumptions, evidence, risks, critical_vetoes, confidence. verdict must 
 approve, revise, request_evidence, escalate_to_human, or reject. action must be null
 or an object with kind, target, and string-valued parameters. Approve only when the
 action is sufficiently evidenced, bounded, reversible where possible, and safe.
+"""
+
+
+REVISION_INSTRUCTIONS = REVIEW_INSTRUCTIONS + """
+This is the single permitted peer-critique round. You receive redacted structured
+positions, not private reasoning. Reassess the evidence and action independently.
+Do not agree merely to reach consensus. Preserve any unresolved critical veto.
 """

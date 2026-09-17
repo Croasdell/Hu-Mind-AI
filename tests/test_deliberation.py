@@ -5,7 +5,7 @@ from humind.consensus import evaluate_consensus
 from humind.deliberation import DeliberationEngine
 from humind.providers.base import review_from_json
 from humind.providers.mock import MockReviewer
-from humind.schemas import ModelReview, ProposedAction, Verdict
+from humind.schemas import ModelReview, PeerReviewSummary, ProposedAction, Verdict
 from humind.shadow import ShadowProbeGenerator
 from humind.terminal import run_dual_demo
 
@@ -20,6 +20,21 @@ def approved_review(provider: str, action: ProposedAction) -> ModelReview:
         risks=("time cost",),
         confidence=0.85,
     )
+
+
+class ScriptedRevisionReviewer:
+    def __init__(self, name, first, revised):
+        self.name = name
+        self.first = first
+        self.revised = revised
+        self.revision_inputs = []
+
+    def review(self, objective, probe):
+        return self.first
+
+    def revise(self, objective, probe, own_position, peer_position):
+        self.revision_inputs.append((own_position, peer_position))
+        return self.revised
 
 
 class ConsensusTests(unittest.TestCase):
@@ -66,6 +81,13 @@ class ConsensusTests(unittest.TestCase):
         self.assertFalse(gate.authorize(decision, human_approved=False).allowed)
         self.assertTrue(gate.authorize(decision, human_approved=True).allowed)
 
+    def test_same_provider_identity_cannot_form_consensus(self):
+        decision = evaluate_consensus(
+            (approved_review("same", self.action), approved_review("same", self.action))
+        )
+        self.assertFalse(decision.approved)
+        self.assertIn("distinct provider identities", decision.reasons[0])
+
 
 class ShadowAndEngineTests(unittest.TestCase):
     def test_shadow_probe_is_deterministic_and_bounded(self):
@@ -108,6 +130,65 @@ class ShadowAndEngineTests(unittest.TestCase):
         self.assertIn("Consensus: approved", output)
         self.assertIn("Execution authorized: False", output)
         self.assertIn("human approval remains required", output)
+
+    def test_bounded_revision_can_reach_exact_consensus(self):
+        action = ProposedAction("run_experiment", "benchmark")
+        left = ScriptedRevisionReviewer(
+            "left",
+            ModelReview("left", Verdict.REVISE, "private left rationale", confidence=0.6),
+            approved_review("left", action),
+        )
+        right = ScriptedRevisionReviewer(
+            "right",
+            ModelReview(
+                "right",
+                Verdict.REQUEST_EVIDENCE,
+                "private right rationale",
+                claims=("bounded test is reversible",),
+                risks=("compute cost",),
+                confidence=0.6,
+            ),
+            approved_review("right", action),
+        )
+        result = DeliberationEngine(left, right).deliberate("Test revision")
+        self.assertTrue(result.consensus.approved)
+        self.assertEqual(len(result.review_rounds), 2)
+        peer = left.revision_inputs[0][1]
+        self.assertIsInstance(peer, PeerReviewSummary)
+        self.assertNotIn("summary", peer.as_payload())
+        self.assertNotIn("assumptions", peer.as_payload())
+
+    def test_first_round_consensus_skips_revision(self):
+        action = ProposedAction("run_experiment", "benchmark")
+        left = ScriptedRevisionReviewer("left", approved_review("left", action), approved_review("left", action))
+        right = ScriptedRevisionReviewer("right", approved_review("right", action), approved_review("right", action))
+        result = DeliberationEngine(left, right).deliberate("Already agreed")
+        self.assertEqual(len(result.review_rounds), 1)
+        self.assertFalse(left.revision_inputs)
+
+    def test_first_round_veto_is_sticky_across_revision(self):
+        action = ProposedAction("run_experiment", "benchmark")
+        veto = ModelReview(
+            "left",
+            Verdict.REJECT,
+            "private veto rationale",
+            critical_vetoes=("unresolved safety boundary",),
+            confidence=0.9,
+        )
+        left = ScriptedRevisionReviewer("left", veto, approved_review("left", action))
+        right = ScriptedRevisionReviewer("right", approved_review("right", action), approved_review("right", action))
+        result = DeliberationEngine(left, right).deliberate("Do not erase veto")
+        self.assertFalse(result.consensus.approved)
+        self.assertIn("first-round critical veto", result.consensus.reasons[0])
+
+    def test_spoofed_review_identity_is_rejected(self):
+        action = ProposedAction("run_experiment", "benchmark")
+        left = MockReviewer(approved_review("left", action))
+        right = MockReviewer(approved_review("right", action))
+        right.name = "right"
+        right._review = approved_review("left", action)
+        with self.assertRaisesRegex(ValueError, "identity mismatch"):
+            DeliberationEngine(left, right).deliberate("identity check")
 
 
 if __name__ == "__main__":

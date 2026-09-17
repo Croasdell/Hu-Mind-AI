@@ -57,9 +57,42 @@ class ModelReview:
 
 
 @dataclass(frozen=True)
+class PeerReviewSummary:
+    """Shareable review fields; free-form summary and hidden reasoning excluded."""
+
+    provider: str
+    verdict: Verdict
+    action: ProposedAction | None
+    action_fingerprint: str | None
+    claims: tuple[str, ...]
+    evidence: tuple[str, ...]
+    risks: tuple[str, ...]
+    critical_vetoes: tuple[str, ...]
+    confidence: float
+
+    @classmethod
+    def from_review(cls, review: ModelReview) -> "PeerReviewSummary":
+        return cls(
+            provider=review.provider,
+            verdict=review.verdict,
+            action=review.action,
+            action_fingerprint=review.action.fingerprint if review.action else None,
+            claims=review.claims,
+            evidence=review.evidence,
+            risks=review.risks,
+            critical_vetoes=review.critical_vetoes,
+            confidence=review.confidence,
+        )
+
+    def as_payload(self) -> dict:
+        payload = asdict(self)
+        payload["verdict"] = self.verdict.value
+        return payload
+
+
+@dataclass(frozen=True)
 class ConsensusDecision:
     approved: bool
     status: Verdict
     reasons: tuple[str, ...]
     action: ProposedAction | None = None
-

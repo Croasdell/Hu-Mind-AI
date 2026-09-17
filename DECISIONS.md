@@ -41,6 +41,7 @@ append-only; later decisions may supersede but do not erase earlier reasoning.
   and decision rules before pursuing a capital-intensive joint venture.
 - **Reconsider when:** partner feedback or legal review identifies a more viable
   institutional structure.
+
 ## D-0004 — Enforce the offline provider boundary in code
 
 - **Status:** accepted for the Gate-1 prototype
@@ -71,3 +72,20 @@ append-only; later decisions may supersede but do not erase earlier reasoning.
 - **Affected hypotheses/gates:** H1, H3, H6, Gate 1.
 - **Reconsider when:** a chosen local runtime cannot provide trustworthy usage
   accounting; any relaxation then requires an independent server-side meter.
+
+## D-0006 — Permit one redacted peer-critique round
+
+- **Status:** accepted as a falsifiable experiment
+- **Decision:** Preserve independent first reviews. If they disagree and both
+  providers support revision, permit exactly one round containing structured
+  positions but no free-form summaries, assumptions, private reasoning, or
+  model state. Reapply deterministic consensus afterward.
+- **Safety constraints:** provider identity is checked every round; unresolved
+  disagreement blocks action; a first-round critical veto remains sticky and
+  requires human evidence review.
+- **Reason:** a bounded exchange may produce synthesis while limiting conformity,
+  unbounded debate, and accidental chain-of-thought transfer.
+- **Affected hypotheses/gates:** H1, H2, H3, H5, Gate 1, Gate 2.
+- **Falsification condition:** remove or redesign the round if cost-matched
+  evaluation shows greater false consensus, worse calibration, or no material
+  benefit over independent review and simple voting.

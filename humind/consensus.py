@@ -16,6 +16,8 @@ def evaluate_consensus(
 
     left, right = reviews
     reasons: list[str] = []
+    if left.provider == right.provider:
+        reasons.append("reviewers must have distinct provider identities")
     if left.verdict is not Verdict.APPROVE or right.verdict is not Verdict.APPROVE:
         reasons.append("both reviewers must approve")
     if left.critical_vetoes or right.critical_vetoes:
@@ -43,4 +45,3 @@ def evaluate_consensus(
         ("independent reviewers approved the same canonical action",),
         left.action,
     )
-

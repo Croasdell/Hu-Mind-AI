@@ -57,6 +57,7 @@ for a Kimi/OpenAI dual-review experiment:
 - a bounded adaptive shadow-probe generator;
 - structured, independent model reviews;
 - exact-action consensus with confidence, evidence, and veto checks;
+- one bounded redacted peer-critique round when initial reviews disagree;
 - a human approval and action-allowlist gate;
 - Kimi and OpenAI API adapters that are inactive until configured;
 - a manifest-verified local provider that rejects non-allowlisted endpoints;

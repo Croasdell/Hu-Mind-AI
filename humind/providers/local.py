@@ -7,11 +7,11 @@ import json
 from pathlib import Path
 import time
 
-from .base import REVIEW_INSTRUCTIONS, review_from_json
+from .base import REVIEW_INSTRUCTIONS, REVISION_INSTRUCTIONS, review_from_json
 from .http import ProviderError, post_json
 from ..manifest import VerifiedModelManifest, load_and_verify_manifest
 from ..offline import OfflineNetworkPolicy
-from ..schemas import ModelReview, ThoughtProbe
+from ..schemas import ModelReview, PeerReviewSummary, ThoughtProbe
 
 
 @dataclass(frozen=True)
@@ -54,9 +54,9 @@ class LocalReviewer:
         self.api_key = api_key
         self.budget = budget or InferenceBudget()
 
-    def review(self, objective: str, probe: ThoughtProbe) -> ModelReview:
-        user_content = json.dumps({"objective": objective, "shadow_probe": probe.__dict__})
-        input_chars = len(REVIEW_INSTRUCTIONS) + len(user_content)
+    def _complete(self, instructions: str, user_payload: dict) -> ModelReview:
+        user_content = json.dumps(user_payload)
+        input_chars = len(instructions) + len(user_content)
         if input_chars > self.budget.max_input_chars:
             raise ProviderError(
                 f"input budget exceeded: {input_chars} > {self.budget.max_input_chars} characters"
@@ -64,7 +64,7 @@ class LocalReviewer:
         payload = {
             "model": self.manifest.endpoint_model,
             "messages": [
-                {"role": "system", "content": REVIEW_INSTRUCTIONS},
+                {"role": "system", "content": instructions},
                 {"role": "user", "content": user_content},
             ],
             "response_format": {"type": "json_object"},
@@ -96,3 +96,26 @@ class LocalReviewer:
                 f"token budget exceeded: {total_tokens} > {self.budget.max_total_tokens}"
             )
         return review_from_json(self.name, content)
+
+    def review(self, objective: str, probe: ThoughtProbe) -> ModelReview:
+        return self._complete(
+            REVIEW_INSTRUCTIONS,
+            {"objective": objective, "shadow_probe": probe.__dict__},
+        )
+
+    def revise(
+        self,
+        objective: str,
+        probe: ThoughtProbe,
+        own_position: PeerReviewSummary,
+        peer_position: PeerReviewSummary,
+    ) -> ModelReview:
+        return self._complete(
+            REVISION_INSTRUCTIONS,
+            {
+                "objective": objective,
+                "shadow_probe": probe.__dict__,
+                "own_position": own_position.as_payload(),
+                "peer_position": peer_position.as_payload(),
+            },
+        )

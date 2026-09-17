@@ -34,8 +34,9 @@ still need repetition against the selected inference servers.
   available hardware; treat full Kimi-class deployment as a later scale study.
 - Validate malformed responses, timeouts, refusals, provider loss, and model
   version mismatches.
-- Add a second round in which reviewers see concise claims and objections from
-  the other side, but never private chain-of-thought.
+- [Implemented in orchestration] Add a single second round in which reviewers
+  see concise structured claims, evidence, risks, vetoes, and proposed action
+  from the other side, but never free-form summaries or private chain-of-thought.
 - Add evidence objects with local document identity, import time, excerpt hash,
   and claim linkage.
 - Add signed model manifests and explicit budgets for tokens, rounds, latency,
