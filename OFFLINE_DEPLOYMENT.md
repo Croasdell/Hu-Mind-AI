@@ -71,7 +71,8 @@ deterministic consensus layer.
 - [ ] Signed production manifests created with all artifact hashes.
 - [ ] Egress-deny firewall configuration independently checked.
 - [ ] Two model servers run on loopback or the isolated LAN.
-- [ ] Provider loss, timeout, malformed output, and version mismatch fail closed.
+- [x] Provider loss, timeout, malformed output, token overrun, and runtime model
+  mismatch fail closed in injected regression tests.
 - [ ] The real-model 100-task dataset is preregistered and frozen.
 - [ ] Single-model and dual-model reports include latency, memory, energy, and errors.
 - [ ] A second machine reproduces the results.

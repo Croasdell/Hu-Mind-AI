@@ -24,7 +24,9 @@ Implementation status: the local protocol adapter, loopback-by-default endpoint
 policy, signed-manifest verifier, and deterministic 100-task reporting harness
 exist. This is plumbing evidence only. Two real models, host-level isolation,
 failure injection, capability tasks, resource measurements, and independent
-reproduction remain open.
+reproduction remain open. Injected unit tests now cover provider loss, malformed
+output, timeout overrun, token overrun, and runtime model mismatch; these tests
+still need repetition against the selected inference servers.
 
 - Add a strict offline provider that accepts only loopback or approved isolated
   network endpoints.

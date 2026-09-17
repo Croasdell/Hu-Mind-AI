@@ -56,3 +56,18 @@ append-only; later decisions may supersede but do not erase earlier reasoning.
 - **Affected hypotheses/gates:** H6, Gate 0, Gate 1.
 - **Reconsider when:** the first external research partner joins or a production
   provisioning appliance is selected.
+
+## D-0005 — Treat missing runtime evidence as provider failure
+
+- **Status:** accepted for Gate 1
+- **Decision:** A local response is inadmissible unless it identifies the exact
+  manifest-approved model, reports total token use, stays within input/output/
+  total-token and elapsed-time budgets, and passes the structured review
+  contract.
+- **Reason:** an answer cannot safely enter consensus when its model identity or
+  resource use is unknown, even if its prose appears plausible.
+- **Evidence:** injected tests cover provider loss, malformed JSON, missing
+  accounting, wrong model identity, and budget overruns.
+- **Affected hypotheses/gates:** H1, H3, H6, Gate 1.
+- **Reconsider when:** a chosen local runtime cannot provide trustworthy usage
+  accounting; any relaxation then requires an independent server-side meter.

@@ -148,6 +148,12 @@ and endpoint boundary before making inference requests. The prototype signing
 scheme is HMAC-SHA256; multi-institution operation requires a later migration
 to public-key or threshold signing with protected keys.
 
+Each local request also carries an enforced inference budget. Input size and
+requested output tokens are bounded before dispatch; elapsed time, reported
+total tokens, structured response shape, and runtime model identity are checked
+before a review can enter consensus. Missing accounting or any mismatch raises
+a provider error, so no action can be approved from that round.
+
 No runtime secrets or external provider credentials belong in the air-gapped
 environment.
 
