@@ -4,6 +4,14 @@ Hu-Mind AI is an original, local-first dual-process assistant: a creative
 engine proposes possibilities, then a logic engine checks them for accuracy,
 clarity, feasibility, and risk before they are accepted.
 
+The long-term research aim is a working, independently evaluated candidate AGI.
+The living top-down plan is [PROGRAMME.md](PROGRAMME.md). It connects the
+technical architecture to stage gates, historical failure lessons, offline
+hardware, funding, and a possible international cooperative research facility.
+See also [FAILURE_LESSONS.md](FAILURE_LESSONS.md),
+[COOPERATION_CHARTER.md](COOPERATION_CHARTER.md), and
+[DECISIONS.md](DECISIONS.md).
+
 The name means **Human Mind AI**. The design is inspired by complementary
 creative and analytical thinking—not by copying any proprietary service.
 

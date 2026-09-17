@@ -34,9 +34,11 @@ This is safer and more testable than generating vaguely "negative" thoughts.
 
 ### 3. Independent reviewers
 
-Kimi and an OpenAI model receive the same objective and shadow probe. In the
-first review round neither sees the other's answer. Each must return the same
-provider-neutral JSON contract:
+Two heterogeneous, locally hosted open-weight models receive the same objective
+and shadow probe. Kimi and OpenAI `gpt-oss` are research candidates, subject to
+hardware feasibility and licensing review; they are not permanent architectural
+requirements. In the first review round neither model sees the other's answer.
+Each must return the same provider-neutral JSON contract:
 
 - verdict;
 - proposed canonical action;
@@ -114,17 +116,30 @@ Consequently, future evidence adapters need source verification, retrieved data
 must be treated as untrusted, provider failures must fail closed, and high-risk
 actions must remain outside the executable allowlist.
 
-## Provider configuration
+## Offline deployment boundary
 
-The repository contains Kimi and OpenAI API adapters, but performs no API calls
-unless an application explicitly constructs them with credentials and a model
-name. Keep credentials in environment variables such as `MOONSHOT_API_KEY` and
-`OPENAI_API_KEY`; never commit them.
+The reference system is air-gapped. Models are downloaded, licensed, hashed,
+scanned, and transferred through a controlled provisioning process, then served
+through separate loopback or isolated-LAN endpoints. The orchestrator must be
+able to reject any non-local endpoint when strict offline mode is enabled.
 
-The OpenAI adapter uses the Responses API with response storage disabled. The
-Kimi adapter uses Moonshot's OpenAI-compatible chat-completions endpoint. Model
-identifiers are configuration, not hard-coded policy, because availability and
-capability change over time.
+The repository currently contains Kimi and OpenAI cloud adapters for comparative
+development work. They are not the production boundary and must not be enabled
+inside the reference environment. The next provider layer will target local
+OpenAI-compatible inference servers such as vLLM, Ollama, or llama.cpp without
+hard-coding a particular runtime.
+
+Every local model requires a manifest containing:
+
+- model identity and exact revision;
+- source and licence;
+- file hashes and signature status;
+- quantisation and inference runtime;
+- expected memory and hardware requirements;
+- evaluation status and approved roles.
+
+No runtime secrets or external provider credentials belong in the air-gapped
+environment.
 
 ## What Hu-Mind is not
 
@@ -133,4 +148,5 @@ capability change over time.
 - Consensus is not proof of correctness.
 - The shadow probe is not an autonomous personality.
 - The current action gate is authorization logic, not a general-purpose agent.
-
+- The current cloud adapters are development comparators, not the offline
+  reference deployment.

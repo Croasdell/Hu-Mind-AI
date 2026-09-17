@@ -18,18 +18,23 @@ and simple-voting baselines at an acceptable cost and latency?
 Exit criterion: all safety invariants have tests and no component can execute an
 action directly.
 
-## Phase 1: live model experiment
+## Phase 1: local model experiment
 
-- Connect one Kimi model and one OpenAI model through environment configuration.
-- Validate malformed responses, timeouts, refusals, and rate limits.
+- Add a strict offline provider that accepts only loopback or approved isolated
+  network endpoints.
+- Serve two distinct open-weight models locally. Begin with models that fit the
+  available hardware; treat full Kimi-class deployment as a later scale study.
+- Validate malformed responses, timeouts, refusals, provider loss, and model
+  version mismatches.
 - Add a second round in which reviewers see concise claims and objections from
   the other side, but never private chain-of-thought.
-- Add evidence objects with source URI, retrieval time, excerpt hash, and claim
-  linkage.
-- Add explicit budgets for requests, tokens, rounds, latency, and spending.
+- Add evidence objects with local document identity, import time, excerpt hash,
+  and claim linkage.
+- Add signed model manifests and explicit budgets for tokens, rounds, latency,
+  energy, memory, and storage.
 
 Exit criterion: 100 recorded tasks can run reproducibly without any tool or
-action execution.
+action execution or external network access.
 
 ## Phase 2: evaluation
 
@@ -45,8 +50,8 @@ Build a versioned benchmark containing:
 
 Compare:
 
-1. Kimi alone;
-2. OpenAI alone;
+1. local reasoner A alone;
+2. local reasoner B alone;
 3. independent reviews with majority/simple agreement;
 4. independent reviews plus the bounded shadow and consensus gates.
 
@@ -75,8 +80,10 @@ demonstrates a measurable advantage over their existing review process.
 
 ## Phase 4: funding and compute
 
-Use Phase 2 results to support applications to NVIDIA Inception, cloud-credit
-programmes, UK AI compute-access schemes, and Innovate UK. The funding request
+Use Phase 2 results to support applications to NVIDIA Inception, UK AI
+compute-access schemes, research partners, and Innovate UK. Cloud systems may
+support explicitly separated comparison studies, but do not replace the
+offline reference environment. The funding request
 must connect compute to a specific experiment:
 
 - model and precision;
@@ -89,10 +96,32 @@ must connect compute to a specific experiment:
 Hardware purchase should follow evidence that compute, rather than architecture
 or evaluation quality, is the limiting factor.
 
+## Phase 5: learning and generalization
+
+- Add provenance-aware long-term memory and controlled skill acquisition.
+- Evaluate transfer to unfamiliar task families and simulated environments.
+- Test catastrophic forgetting, poisoning, rollback, interruption, and
+  shutdown.
+- Publish successful and failed architectural ablations.
+
+Exit criterion: independent evaluators reproduce improved transfer without an
+unacceptable loss of control, calibration, or previously demonstrated skills.
+
+## Phase 6: candidate AGI and international facility
+
+- Run the preregistered candidate-AGI assessment defined in `PROGRAMME.md`.
+- Require replication by at least two independent institutions.
+- Establish consortium, inspection, incident, IP, and peaceful-purpose rules
+  before expanding high-capability access.
+- Use `COOPERATION_CHARTER.md` as the initial discussion draft rather than
+  treating a joint venture or treaty as already agreed.
+
+Exit criterion: no internal declaration is sufficient; evidence, external
+replication, and multinational governance must all support the next step.
+
 ## Definition of an action-ready release
 
 An action-ready Hu-Mind release requires source-linked evidence, calibrated
 confidence, independent security review, budget enforcement, permission-scoped
 tools, durable audit records, human approval, rollback procedures, and an
 incident-response plan. Until then, Hu-Mind remains an advisory research tool.
-
