@@ -33,7 +33,12 @@ The real capability-dataset schema now enforces 100 unique tasks, ten failure
 categories, consistent gold actions, hidden risk labels, and an exact file hash.
 One scorer supports single-model, simple-agreement, exact-consensus, and
 peer-revision configurations. Independent case authoring/adjudication and
-resource telemetry are still required before E1/E5 registration.
+external energy/peak-memory instrumentation are still required before E1/E5
+registration.
+
+Provider token counts and per-request latency now flow into comparison reports,
+with consistency and coverage checks. Controlled energy and peak-memory meters
+remain external inputs and must be captured on the selected hardware.
 
 - Add a strict offline provider that accepts only loopback or approved isolated
   network endpoints.

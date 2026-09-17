@@ -70,7 +70,7 @@ class ManifestAndLocalProviderTests(unittest.TestCase):
     def valid_response(**overrides):
         response = {
             "model": "model-a",
-            "usage": {"total_tokens": 120},
+            "usage": {"prompt_tokens": 80, "completion_tokens": 40, "total_tokens": 120},
             "choices": [{"message": {"content": '{"verdict":"request_evidence","summary":"need proof","action":null,"confidence":0.4}'}}],
         }
         response.update(overrides)
@@ -92,6 +92,8 @@ class ManifestAndLocalProviderTests(unittest.TestCase):
         with patch("humind.providers.local.post_json", return_value=response) as request:
             review = reviewer.review("objective", type("Probe", (), {"__dict__": {"text": "test"}})())
         self.assertEqual(review.provider, "local-a")
+        self.assertEqual(review.telemetry.prompt_tokens, 80)
+        self.assertEqual(review.telemetry.completion_tokens, 40)
         self.assertEqual(request.call_args.args[2]["model"], "model-a")
         self.assertEqual(request.call_args.args[2]["max_tokens"], 2_048)
 
@@ -116,9 +118,19 @@ class ManifestAndLocalProviderTests(unittest.TestCase):
         tiny_input = self.reviewer(budget=InferenceBudget(max_input_chars=10))
         with self.assertRaisesRegex(ProviderError, "input budget exceeded"):
             tiny_input.review("objective", type("Probe", (), {"__dict__": {}})())
-        response = self.valid_response(usage={"total_tokens": 8_193})
+        response = self.valid_response(
+            usage={"prompt_tokens": 7_000, "completion_tokens": 1_193, "total_tokens": 8_193}
+        )
         with patch("humind.providers.local.post_json", return_value=response):
             with self.assertRaisesRegex(ProviderError, "token budget exceeded"):
+                self.reviewer().review("objective", type("Probe", (), {"__dict__": {}})())
+
+    def test_inconsistent_usage_accounting_fails_closed(self):
+        response = self.valid_response(
+            usage={"prompt_tokens": 80, "completion_tokens": 40, "total_tokens": 119}
+        )
+        with patch("humind.providers.local.post_json", return_value=response):
+            with self.assertRaisesRegex(ProviderError, "usage accounting"):
                 self.reviewer().review("objective", type("Probe", (), {"__dict__": {}})())
 
     def test_provider_loss_produces_no_review(self):

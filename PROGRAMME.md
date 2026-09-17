@@ -264,6 +264,8 @@ Pass condition: governance exists before high-capability expansion, not after.
 These are planning envelopes, not purchase authorizations. Every procurement
 requires a workload model, measured bottleneck, energy/cooling plan, support
 plan, and comparison with rental or partner access.
+Current card specifications, local-host limits, measurement requirements, and
+the staged funding case are maintained in `HARDWARE_PLAN.md`.
 
 ## 9. Living-plan change process
 

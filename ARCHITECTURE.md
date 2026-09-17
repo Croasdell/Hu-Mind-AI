@@ -187,6 +187,13 @@ total tokens, structured response shape, and runtime model identity are checked
 before a review can enter consensus. Missing accounting or any mismatch raises
 a provider error, so no action can be approved from that round.
 
+Provider-reported prompt and completion counts must add exactly to total tokens.
+The adapter attaches this accounting and measured request latency after parsing,
+so model-generated JSON cannot forge the telemetry fields. Evaluation reports
+include every first and revision round, expose coverage when telemetry is
+missing, and accept energy/peak-memory values only from the external controlled
+measurement process.
+
 No runtime secrets or external provider credentials belong in the air-gapped
 environment.
 

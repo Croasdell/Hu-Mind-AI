@@ -16,6 +16,7 @@ The preregistered falsification matrix and tamper-evident result process are in
 [EXPERIMENTS.md](EXPERIMENTS.md).
 The initial partner invitation is [CONSORTIUM_CONCEPT_NOTE.md](CONSORTIUM_CONCEPT_NOTE.md).
 The strict E1/E5 dataset and scoring protocol is [CAPABILITY_DATASET.md](CAPABILITY_DATASET.md).
+Hardware selection and funding evidence are governed by [HARDWARE_PLAN.md](HARDWARE_PLAN.md).
 
 The name means **Human Mind AI**. The design is inspired by complementary
 creative and analytical thinking—not by copying any proprietary service.
@@ -65,6 +66,7 @@ for a Kimi/OpenAI dual-review experiment:
 - content-addressed local evidence packs with strict claim-link verification;
 - hash-chained experiment plans/results with independently anchorable heads;
 - a strict 100-task capability-dataset validator and shared single/dual scoring;
+- provider-attached token/latency telemetry plus external energy/memory fields;
 - a human approval and action-allowlist gate;
 - Kimi and OpenAI API adapters that are inactive until configured;
 - a manifest-verified local provider that rejects non-allowlisted endpoints;

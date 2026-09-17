@@ -93,6 +93,10 @@ The report computes:
 - false-consensus rate;
 - peer-revision rate;
 - wall-clock evaluation duration.
+- provider-reported prompt/completion/total tokens, summed provider latency,
+  effective tokens per provider-second, and telemetry coverage;
+- externally measured evaluation energy and peak accelerator/host memory when
+  supplied by the controlled measurement process.
 
 Marker matching is a transparent lexical baseline, not semantic proof. A model
 can describe the right risk with different words or echo a marker without

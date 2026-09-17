@@ -136,3 +136,19 @@ append-only; later decisions may supersede but do not erase earlier reasoning.
 - **Limit:** lexical risk recall and fixed gold actions need blinded human review;
   training-data contamination cannot be excluded by schema validation.
 - **Affected hypotheses/gates:** H1, H2, H3, H5, Gate 1, Gate 2.
+
+## D-0010 — Size hardware from complete evaluation telemetry
+
+- **Status:** accepted for procurement and funding requests
+- **Decision:** Require provider-attached prompt/completion/total token counts
+  and latency, plus externally measured energy and peak memory, before selecting
+  the Gate-1 node or claiming a cost-matched architectural benefit.
+- **Reason:** aggregate VRAM and model parameter counts do not establish runtime
+  fit, simultaneous dual-model behavior, throughput, power, or value.
+- **Controls:** inconsistent provider accounting fails closed; reports expose
+  telemetry coverage; all critique rounds count toward resource totals; product
+  specifications and quotes are refreshed at procurement time.
+- **Current evidence:** this development host has no NVIDIA compute device and
+  only about 7.6 GiB system RAM, so it is suitable for software foundations but
+  not the real two-model trial.
+- **Affected hypotheses/gates:** H1, H5, H6, Gates 1-2 and hardware funding.

@@ -8,11 +8,12 @@ from humind.evaluation import (
     CAPABILITY_CATEGORIES,
     EvaluationDataset,
     EvaluationError,
+    ResourceMeasurements,
     evaluate_engine,
     evaluate_simple_agreement,
     evaluate_single,
 )
-from humind.schemas import ModelReview, ProposedAction, Verdict
+from humind.schemas import InferenceTelemetry, ModelReview, ProposedAction, Verdict
 
 
 class LabelReviewer:
@@ -22,6 +23,7 @@ class LabelReviewer:
 
     def review(self, objective, probe):
         task = self.tasks[objective]
+        telemetry = InferenceTelemetry(self.name, 10, 2, 12, 0.1)
         if task.expected_approval:
             return ModelReview(
                 self.name,
@@ -30,6 +32,7 @@ class LabelReviewer:
                 action=task.expected_action,
                 evidence=("fixture",),
                 confidence=0.9,
+                telemetry=telemetry,
             )
         return ModelReview(
             self.name,
@@ -38,7 +41,21 @@ class LabelReviewer:
             evidence=("fixture",),
             risks=task.critical_risk_markers,
             confidence=0.9,
+            telemetry=telemetry,
         )
+
+
+class RevisingLabelReviewer(LabelReviewer):
+    def review(self, objective, probe):
+        return ModelReview(
+            self.name,
+            Verdict.REVISE,
+            "First-round fixture disagreement.",
+            telemetry=InferenceTelemetry(self.name, 10, 2, 12, 0.1),
+        )
+
+    def revise(self, objective, probe, own_position, peer_position):
+        return super().review(objective, probe)
 
 
 class EvaluationTests(unittest.TestCase):
@@ -123,6 +140,11 @@ class EvaluationTests(unittest.TestCase):
             dataset,
             configuration_id="fixture-dual-independent-v1",
             allow_revision=False,
+            resources=ResourceMeasurements(
+                measured_energy_wh=50.0,
+                peak_accelerator_memory_gb=24.0,
+                peak_host_memory_gb=12.0,
+            ),
         )
         self.assertEqual(report.decision_accuracy, 1.0)
         self.assertEqual(report.unsafe_approval_rate, 0.0)
@@ -132,6 +154,14 @@ class EvaluationTests(unittest.TestCase):
         self.assertEqual(report.critical_risk_recall, 1.0)
         self.assertEqual(report.false_consensus_rate, 0.0)
         self.assertEqual(report.revision_rate, 0.0)
+        self.assertEqual(report.prompt_tokens, 2_000)
+        self.assertEqual(report.completion_tokens, 400)
+        self.assertEqual(report.total_tokens, 2_400)
+        self.assertAlmostEqual(report.provider_latency_seconds, 20.0)
+        self.assertAlmostEqual(report.tokens_per_provider_second, 120.0)
+        self.assertEqual(report.telemetry_coverage_rate, 1.0)
+        self.assertEqual(report.measured_energy_wh, 50.0)
+        self.assertEqual(report.peak_accelerator_memory_gb, 24.0)
         self.assertTrue(report.capability_evaluation)
 
     def test_same_dataset_scores_single_and_simple_agreement_baselines(self):
@@ -152,6 +182,25 @@ class EvaluationTests(unittest.TestCase):
         self.assertEqual(agreement.decision_accuracy, 1.0)
         self.assertEqual(single.appropriate_escalation_rate, 0.0)
         self.assertEqual(agreement.appropriate_escalation_rate, 1.0)
+
+    def test_invalid_external_resource_measurements_are_rejected(self):
+        with self.assertRaisesRegex(EvaluationError, "finite and non-negative"):
+            ResourceMeasurements(measured_energy_wh=-1.0)
+
+    def test_revision_round_telemetry_is_included_in_resource_totals(self):
+        dataset = EvaluationDataset.load(self.path)
+        report = evaluate_engine(
+            DeliberationEngine(
+                RevisingLabelReviewer("fixture-left", dataset.tasks),
+                RevisingLabelReviewer("fixture-right", dataset.tasks),
+            ),
+            dataset,
+            configuration_id="fixture-revision-v1",
+            allow_revision=True,
+        )
+        self.assertEqual(report.revision_rate, 1.0)
+        self.assertEqual(report.total_tokens, 4_800)
+        self.assertEqual(report.telemetry_coverage_rate, 1.0)
 
 
 if __name__ == "__main__":

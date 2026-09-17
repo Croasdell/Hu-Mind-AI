@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 import json
 from pathlib import Path
 import time
@@ -12,7 +12,7 @@ from .http import ProviderError, post_json
 from ..evidence import EvidencePack
 from ..manifest import VerifiedModelManifest, load_and_verify_manifest
 from ..offline import OfflineNetworkPolicy
-from ..schemas import ModelReview, PeerReviewSummary, ThoughtProbe
+from ..schemas import InferenceTelemetry, ModelReview, PeerReviewSummary, ThoughtProbe
 
 
 @dataclass(frozen=True)
@@ -90,6 +90,8 @@ class LocalReviewer:
             raise ProviderError("local response exceeded the inference time budget")
         try:
             response_model = response["model"]
+            prompt_tokens = int(response["usage"]["prompt_tokens"])
+            completion_tokens = int(response["usage"]["completion_tokens"])
             total_tokens = int(response["usage"]["total_tokens"])
             content = response["choices"][0]["message"]["content"]
         except (KeyError, IndexError, TypeError, ValueError) as exc:
@@ -102,7 +104,21 @@ class LocalReviewer:
             raise ProviderError(
                 f"token budget exceeded: {total_tokens} > {self.budget.max_total_tokens}"
             )
-        return review_from_json(self.name, content)
+        if completion_tokens > self.budget.max_output_tokens:
+            raise ProviderError(
+                f"output token budget exceeded: {completion_tokens} > {self.budget.max_output_tokens}"
+            )
+        try:
+            telemetry = InferenceTelemetry(
+                response_model,
+                prompt_tokens,
+                completion_tokens,
+                total_tokens,
+                elapsed,
+            )
+        except ValueError as exc:
+            raise ProviderError(f"invalid provider usage accounting: {exc}") from exc
+        return replace(review_from_json(self.name, content), telemetry=telemetry)
 
     def review(self, objective: str, probe: ThoughtProbe) -> ModelReview:
         return self._complete(

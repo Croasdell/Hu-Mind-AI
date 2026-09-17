@@ -6,6 +6,7 @@ from dataclasses import asdict, dataclass
 from enum import Enum
 import hashlib
 import json
+import math
 
 
 class Verdict(str, Enum):
@@ -46,6 +47,25 @@ class EvidenceLink:
 
 
 @dataclass(frozen=True)
+class InferenceTelemetry:
+    model_id: str
+    prompt_tokens: int
+    completion_tokens: int
+    total_tokens: int
+    latency_seconds: float
+
+    def __post_init__(self) -> None:
+        if not self.model_id:
+            raise ValueError("telemetry model identity is required")
+        if min(self.prompt_tokens, self.completion_tokens, self.total_tokens) < 0:
+            raise ValueError("token counts cannot be negative")
+        if self.prompt_tokens + self.completion_tokens != self.total_tokens:
+            raise ValueError("prompt and completion tokens must sum to total tokens")
+        if not math.isfinite(self.latency_seconds) or self.latency_seconds < 0:
+            raise ValueError("latency must be a finite non-negative number")
+
+
+@dataclass(frozen=True)
 class ModelReview:
     provider: str
     verdict: Verdict
@@ -58,6 +78,7 @@ class ModelReview:
     risks: tuple[str, ...] = ()
     critical_vetoes: tuple[str, ...] = ()
     confidence: float = 0.0
+    telemetry: InferenceTelemetry | None = None
 
     def __post_init__(self) -> None:
         if not 0.0 <= self.confidence <= 1.0:
