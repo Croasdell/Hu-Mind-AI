@@ -29,6 +29,12 @@ reproduction remain open. Injected unit tests now cover provider loss, malformed
 output, timeout overrun, token overrun, and runtime model mismatch; these tests
 still need repetition against the selected inference servers.
 
+The real capability-dataset schema now enforces 100 unique tasks, ten failure
+categories, consistent gold actions, hidden risk labels, and an exact file hash.
+One scorer supports single-model, simple-agreement, exact-consensus, and
+peer-revision configurations. Independent case authoring/adjudication and
+resource telemetry are still required before E1/E5 registration.
+
 - Add a strict offline provider that accepts only loopback or approved isolated
   network endpoints.
 - Serve two distinct open-weight models locally. Begin with models that fit the

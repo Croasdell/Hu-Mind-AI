@@ -120,3 +120,19 @@ append-only; later decisions may supersede but do not erase earlier reasoning.
 - **Affected hypotheses/gates:** H1-H6, Gates 0-6.
 - **Reconsider when:** consortium key custody is designed; migrate to threshold
   signatures and multiple independently operated archives.
+
+## D-0009 — Separate capability evaluation from infrastructure smoke tests
+
+- **Status:** accepted for E1/E5
+- **Decision:** Keep the deterministic 100-task smoke suite as plumbing evidence
+  only. Require a separate 100-task, uniquely authored, independently
+  adjudicated, held-out JSONL artifact for capability experiments, and score all
+  baselines against its exact registered bytes.
+- **Reason:** repeated known-answer templates can verify orchestration but would
+  produce a meaningless capability score and invite benchmark overclaiming.
+- **Controls:** minimum coverage across ten failure categories; consistent gold
+  actions; hidden escalation/risk labels; identical dataset hash across single,
+  simple-agreement, exact-consensus, and peer-revision configurations.
+- **Limit:** lexical risk recall and fixed gold actions need blinded human review;
+  training-data contamination cannot be excluded by schema validation.
+- **Affected hypotheses/gates:** H1, H2, H3, H5, Gate 1, Gate 2.

@@ -33,6 +33,11 @@ Before a run, `ExperimentPlan` fixes:
 Changing one of those fields creates a new plan identity. It does not amend the
 old plan.
 
+The E1/E5 dataset and automated scorer follow `CAPABILITY_DATASET.md`. The
+repository contains the validator and comparison harness, not a secretly
+finished benchmark: independent authors and adjudicators must create the real
+held-out cases before their hash is registered.
+
 ## Required result fields
 
 Every `ExperimentResult` identifies:
