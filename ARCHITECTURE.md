@@ -1,0 +1,136 @@
+# Hu-Mind Deliberation Architecture
+
+Hu-Mind is an experimental dual-review reasoning system. It does not model
+literal left and right brain hemispheres. Instead, it borrows a design metaphor
+from C. G. Jung's tension of opposites: two independently produced positions are
+held apart long enough for a better, third position to emerge.
+
+The engineering claim is deliberately narrower than AGI. Hu-Mind asks whether
+independent, heterogeneous reviewers plus constructive adversarial probes can
+reduce unsupported conclusions and unsafe actions compared with a single model.
+
+## Components
+
+### 1. Objective
+
+The user supplies an objective, constraints, and (eventually) an evidence pack.
+The objective is data, not an instruction that can override Hu-Mind's policy.
+
+### 2. Shadow probe generator
+
+The shadow component produces one constructive counterthought per round. It
+looks for hidden assumptions, contradictory evidence, affected parties, cheaper
+alternatives, and plausible failure modes.
+
+It is intentionally bounded:
+
+- it adapts numeric challenge weights, not its own source code or instructions;
+- its intensity has a fixed cap;
+- its probes are questions, not facts;
+- it has no tools and cannot authorize actions;
+- identical objective and round inputs produce the same probe.
+
+This is safer and more testable than generating vaguely "negative" thoughts.
+
+### 3. Independent reviewers
+
+Kimi and an OpenAI model receive the same objective and shadow probe. In the
+first review round neither sees the other's answer. Each must return the same
+provider-neutral JSON contract:
+
+- verdict;
+- proposed canonical action;
+- claims and assumptions;
+- evidence;
+- risks and critical vetoes;
+- confidence.
+
+Provider diversity may reduce correlated mistakes, but it does not guarantee
+independence or truth. That is an empirical question the evaluation programme
+must measure.
+
+### 4. Consensus gate
+
+The deterministic gate, rather than either model, decides whether consensus
+exists. Approval currently requires:
+
+1. both reviewers explicitly approve;
+2. both propose the exact same canonical action fingerprint;
+3. both meet the confidence threshold;
+4. both provide evidence;
+5. neither raises a critical veto.
+
+Failure produces a request for evidence or escalation. It never silently picks
+one model as the winner.
+
+### 5. Human and action gate
+
+Model consensus is necessary but insufficient. A consequential action also
+requires explicit human approval and an allowlisted action kind. Hu-Mind emits
+an authorization object; it does not presently execute anything.
+
+### 6. Audit trail
+
+Experiments can record structured events as JSON Lines. API keys, hidden model
+reasoning, and sensitive raw prompts must not be written to the audit log.
+
+## Deliberation sequence
+
+```text
+objective
+   |
+   v
+bounded shadow probe
+   |
+   +-------------------+
+   v                   v
+Kimi review        OpenAI review
+   |                   |
+   +---------+---------+
+             v
+    deterministic consensus
+             |
+        no --+-- yes
+        |         |
+ evidence/human   human approval
+ escalation       + allowlist
+                       |
+                       v
+              authorization object
+```
+
+## Threat model
+
+Hu-Mind must assume that:
+
+- both models can hallucinate the same answer;
+- a prompt or retrieved document can attempt prompt injection;
+- one provider can fail, time out, or return malformed JSON;
+- apparent evidence can be irrelevant, circular, or fabricated;
+- consensus can be produced through shared training-data bias;
+- an approved plan can still be harmful outside its stated context.
+
+Consequently, future evidence adapters need source verification, retrieved data
+must be treated as untrusted, provider failures must fail closed, and high-risk
+actions must remain outside the executable allowlist.
+
+## Provider configuration
+
+The repository contains Kimi and OpenAI API adapters, but performs no API calls
+unless an application explicitly constructs them with credentials and a model
+name. Keep credentials in environment variables such as `MOONSHOT_API_KEY` and
+`OPENAI_API_KEY`; never commit them.
+
+The OpenAI adapter uses the Responses API with response storage disabled. The
+Kimi adapter uses Moonshot's OpenAI-compatible chat-completions endpoint. Model
+identifiers are configuration, not hard-coded policy, because availability and
+capability change over time.
+
+## What Hu-Mind is not
+
+- It is not currently AGI or proof of general reasoning.
+- It is not a psychological model or a simulation of a human brain.
+- Consensus is not proof of correctness.
+- The shadow probe is not an autonomous personality.
+- The current action gate is authorization logic, not a general-purpose agent.
+

@@ -41,10 +41,21 @@ pyproject.toml      package metadata and humind command
 
 ## Current status
 
-The terminal loop is working locally with a deterministic placeholder
-creative engine. The review contract is ready for model adapters, but no
-external model is downloaded or called yet. Hu-Mind does not currently edit
-files, execute shell commands, or publish actions.
+The terminal loop is working locally with a deterministic placeholder creative
+engine. The repository now also contains the provider-independent foundation
+for a Kimi/OpenAI dual-review experiment:
+
+- a bounded adaptive shadow-probe generator;
+- structured, independent model reviews;
+- exact-action consensus with confidence, evidence, and veto checks;
+- a human approval and action-allowlist gate;
+- Kimi and OpenAI API adapters that are inactive until configured;
+- offline mocks, audit support, and regression tests.
+
+Hu-Mind does not currently edit files, execute shell commands, or publish
+actions. Read [ARCHITECTURE.md](ARCHITECTURE.md) for the design and threat model,
+and [ROADMAP.md](ROADMAP.md) for the research, evaluation, pilot, and funding
+programme.
 
 ## Terminal prototype
 
@@ -103,6 +114,19 @@ Run the tests:
 python3 -m unittest discover -s tests -v
 ```
 
+No credentials are needed for the offline test suite. Live provider experiments
+will read API credentials from the environment and must use explicit model
+identifiers. Never commit API keys or experimental audit data.
+
+Preview the dual-review architecture without making API calls:
+
+```bash
+python3 -m humind --dual-demo "evaluate a reasoning architecture"
+```
+
+The demonstration deliberately reaches model consensus but leaves execution
+blocked because human approval has not been supplied.
+
 ## Scope and originality
 
 This repository will use public model weights and documented interfaces. It
@@ -112,11 +136,12 @@ before commercial deployment.
 
 ## Roadmap
 
-- Add Mistral-compatible creative-model adapter.
-- Add a local logic/reviewer adapter with structured outputs.
-- Add evidence and citation tracking.
-- Add evaluation sets for factuality, usefulness, and refusal/safety behavior.
-- Add optional tool execution only behind explicit user approval and sandboxing.
+- Validate the Kimi and OpenAI adapters against their live APIs.
+- Add a bounded second critique-and-revision round.
+- Add claim-linked evidence and citation verification.
+- Build the 100-task evaluation set and single-model baselines.
+- Measure correctness, false consensus, risk recall, cost, and latency.
+- Run a narrow supervised pilot before considering tool execution.
 
-The next build should connect the creative adapter first, then run it through
-the existing independent review gate and evaluation tests.
+The next build should run the first live dual-review experiment through the
+existing deterministic consensus and human-approval boundaries.
