@@ -44,6 +44,7 @@ Each must return the same provider-neutral JSON contract:
 - proposed canonical action;
 - claims and assumptions;
 - evidence;
+- claim-to-evidence links containing an evidence ID and excerpt hash;
 - risks and critical vetoes;
 - confidence.
 
@@ -75,6 +76,25 @@ one model as the winner.
 Reviewer identities are checked against the configured providers in every
 round. A first-round critical veto is sticky: a later model revision cannot
 erase it or authorize action. Resolution requires human evidence review.
+
+### 4a. Local evidence boundary
+
+Evidence is imported before deliberation rather than fetched by a model. Each
+selected excerpt records a stable evidence ID, local source identity, locator,
+exact document SHA-256, excerpt SHA-256, and import time. The resulting pack is
+fingerprinted and supplied to local reviewers as untrusted reference material.
+
+In strict evidence mode, every supporting link must:
+
+1. name an evidence ID present in the supplied pack;
+2. repeat that item's excerpt hash exactly; and
+3. point to a claim explicitly declared in the same review.
+
+An invented ID, changed hash, missing link, or link to an undeclared claim
+forces `request_evidence` and blocks consensus. Hash verification proves which
+local bytes were supplied; it does not prove that those bytes are true,
+complete, relevant, independent, or ethically obtained. Source-quality and
+cross-source corroboration remain evaluation work.
 
 ### 5. Human and action gate
 

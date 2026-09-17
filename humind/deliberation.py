@@ -5,6 +5,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 from .consensus import evaluate_consensus
+from .evidence import EvidencePack
 from .providers.base import ReviewerProvider, RevisionProvider
 from .schemas import ConsensusDecision, ModelReview, PeerReviewSummary, ThoughtProbe, Verdict
 from .shadow import ShadowProbeGenerator
@@ -25,12 +26,37 @@ class DeliberationEngine:
         left: ReviewerProvider,
         right: ReviewerProvider,
         shadow: ShadowProbeGenerator | None = None,
+        evidence_pack: EvidencePack | None = None,
+        require_verified_evidence: bool = False,
     ) -> None:
         if left.name == right.name:
             raise ValueError("reviewers must have distinct provider identities")
         self.left = left
         self.right = right
         self.shadow = shadow or ShadowProbeGenerator()
+        if require_verified_evidence and evidence_pack is None:
+            raise ValueError("strict evidence mode requires an evidence pack")
+        self.evidence_pack = evidence_pack
+        self.require_verified_evidence = require_verified_evidence
+
+    def _evaluate(self, reviews: tuple[ModelReview, ModelReview]) -> ConsensusDecision:
+        decision = evaluate_consensus(reviews)
+        if not self.require_verified_evidence:
+            return decision
+        assert self.evidence_pack is not None
+        evidence_issues = []
+        for review in reviews:
+            evidence_issues.extend(
+                f"{review.provider}: {issue}"
+                for issue in self.evidence_pack.verification_issues(review)
+            )
+        if not evidence_issues:
+            return decision
+        return ConsensusDecision(
+            False,
+            Verdict.REQUEST_EVIDENCE,
+            tuple((*(decision.reasons if not decision.approved else ()), *evidence_issues)),
+        )
 
     @staticmethod
     def _validate_identities(
@@ -57,7 +83,7 @@ class DeliberationEngine:
         self._validate_identities(reviews, expected)
         review_rounds = [reviews]
         initial_veto = bool(reviews[0].critical_vetoes or reviews[1].critical_vetoes)
-        consensus = evaluate_consensus(reviews)
+        consensus = self._evaluate(reviews)
         if (
             allow_revision
             and not consensus.approved
@@ -72,7 +98,7 @@ class DeliberationEngine:
             )
             self._validate_identities(reviews, expected)
             review_rounds.append(reviews)
-            consensus = evaluate_consensus(reviews)
+            consensus = self._evaluate(reviews)
             if initial_veto and consensus.approved:
                 consensus = ConsensusDecision(
                     False,

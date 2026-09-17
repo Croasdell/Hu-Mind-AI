@@ -24,7 +24,10 @@ def evaluate_consensus(
         reasons.append("a critical veto remains unresolved")
     if min(left.confidence, right.confidence) < minimum_confidence:
         reasons.append("review confidence is below threshold")
-    if require_evidence and (not left.evidence or not right.evidence):
+    if require_evidence and (
+        (not left.evidence and not left.evidence_links)
+        or (not right.evidence and not right.evidence_links)
+    ):
         reasons.append("both reviewers must provide evidence")
     if left.action is None or right.action is None:
         reasons.append("both reviewers must propose an action")

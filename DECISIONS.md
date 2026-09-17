@@ -89,3 +89,18 @@ append-only; later decisions may supersede but do not erase earlier reasoning.
 - **Falsification condition:** remove or redesign the round if cost-matched
   evaluation shows greater false consensus, worse calibration, or no material
   benefit over independent review and simple voting.
+
+## D-0007 — Make local evidence claim-linked and content-addressed
+
+- **Status:** accepted for strict evidence experiments
+- **Decision:** Import evidence inside the offline boundary, hash the exact
+  document bytes and selected excerpt, fingerprint each pack, and require every
+  model citation to link a declared claim to a known evidence ID and hash.
+- **Reason:** free-form evidence strings allow fabricated provenance to satisfy
+  a superficial consensus check.
+- **Limit:** integrity is not truth. Hashes do not establish source quality,
+  relevance, independence, consent, or completeness.
+- **Affected hypotheses/gates:** H1, H3, H4, Gate 1, Gate 2, Gate 3.
+- **Falsification condition:** revise the representation if claim-link checking
+  does not reduce unsupported-claim and false-consensus rates under blinded
+  evaluation, or if its operational cost outweighs the measured benefit.

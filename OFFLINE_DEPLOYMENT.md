@@ -18,6 +18,10 @@ reference system requires all of the following:
 6. no cloud credentials on the isolated machines;
 7. exported audit results reviewed before they leave the boundary.
 
+Evidence documents follow the same controlled import route. The exact imported
+bytes are hashed before excerpts enter a fingerprinted evidence pack. A hash
+establishes integrity and identity, not truth or permission to use the source.
+
 `OfflineNetworkPolicy` is defence in depth against configuration errors. It
 does not create an air gap and is not a substitute for physical isolation or
 firewall enforcement.

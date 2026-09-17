@@ -39,6 +39,13 @@ class ProposedAction:
 
 
 @dataclass(frozen=True)
+class EvidenceLink:
+    claim: str
+    evidence_id: str
+    excerpt_sha256: str
+
+
+@dataclass(frozen=True)
 class ModelReview:
     provider: str
     verdict: Verdict
@@ -47,6 +54,7 @@ class ModelReview:
     claims: tuple[str, ...] = ()
     assumptions: tuple[str, ...] = ()
     evidence: tuple[str, ...] = ()
+    evidence_links: tuple[EvidenceLink, ...] = ()
     risks: tuple[str, ...] = ()
     critical_vetoes: tuple[str, ...] = ()
     confidence: float = 0.0
@@ -66,6 +74,7 @@ class PeerReviewSummary:
     action_fingerprint: str | None
     claims: tuple[str, ...]
     evidence: tuple[str, ...]
+    evidence_links: tuple[EvidenceLink, ...]
     risks: tuple[str, ...]
     critical_vetoes: tuple[str, ...]
     confidence: float
@@ -79,6 +88,7 @@ class PeerReviewSummary:
             action_fingerprint=review.action.fingerprint if review.action else None,
             claims=review.claims,
             evidence=review.evidence,
+            evidence_links=review.evidence_links,
             risks=review.risks,
             critical_vetoes=review.critical_vetoes,
             confidence=review.confidence,

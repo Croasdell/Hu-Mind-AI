@@ -9,6 +9,7 @@ import time
 
 from .base import REVIEW_INSTRUCTIONS, REVISION_INSTRUCTIONS, review_from_json
 from .http import ProviderError, post_json
+from ..evidence import EvidencePack
 from ..manifest import VerifiedModelManifest, load_and_verify_manifest
 from ..offline import OfflineNetworkPolicy
 from ..schemas import ModelReview, PeerReviewSummary, ThoughtProbe
@@ -42,6 +43,7 @@ class LocalReviewer:
         network_policy: OfflineNetworkPolicy | None = None,
         api_key: str | None = None,
         budget: InferenceBudget | None = None,
+        evidence_pack: EvidencePack | None = None,
     ) -> None:
         if not name:
             raise ValueError("a distinct reviewer name is required")
@@ -53,8 +55,13 @@ class LocalReviewer:
         self.role = role
         self.api_key = api_key
         self.budget = budget or InferenceBudget()
+        self.evidence_pack = evidence_pack
 
     def _complete(self, instructions: str, user_payload: dict) -> ModelReview:
+        if self.evidence_pack is not None:
+            user_payload = dict(user_payload)
+            user_payload["evidence_pack"] = self.evidence_pack.as_payload()
+            user_payload["evidence_pack_sha256"] = self.evidence_pack.fingerprint
         user_content = json.dumps(user_payload)
         input_chars = len(instructions) + len(user_content)
         if input_chars > self.budget.max_input_chars:

@@ -6,7 +6,7 @@ import json
 from typing import Any, Protocol, runtime_checkable
 
 from .http import ProviderError
-from ..schemas import ModelReview, PeerReviewSummary, ProposedAction, ThoughtProbe, Verdict
+from ..schemas import EvidenceLink, ModelReview, PeerReviewSummary, ProposedAction, ThoughtProbe, Verdict
 
 
 class ReviewerProvider(Protocol):
@@ -55,6 +55,20 @@ def review_from_json(provider: str, content: str) -> ModelReview:
         for field in sequence_fields:
             if field in data and not isinstance(data[field], list):
                 raise TypeError(f"{field} must be an array")
+        raw_links = data.get("evidence_links", [])
+        if not isinstance(raw_links, list):
+            raise TypeError("evidence_links must be an array")
+        evidence_links = tuple(
+            EvidenceLink(
+                claim=str(link["claim"]),
+                evidence_id=str(link["evidence_id"]),
+                excerpt_sha256=str(link["excerpt_sha256"]),
+            )
+            for link in raw_links
+            if isinstance(link, dict)
+        )
+        if len(evidence_links) != len(raw_links):
+            raise TypeError("each evidence link must be an object")
         return ModelReview(
             provider=provider,
             verdict=Verdict(data["verdict"]),
@@ -63,6 +77,7 @@ def review_from_json(provider: str, content: str) -> ModelReview:
             claims=tuple(map(str, data.get("claims", ()))),
             assumptions=tuple(map(str, data.get("assumptions", ()))),
             evidence=tuple(map(str, data.get("evidence", ()))),
+            evidence_links=evidence_links,
             risks=tuple(map(str, data.get("risks", ()))),
             critical_vetoes=tuple(map(str, data.get("critical_vetoes", ()))),
             confidence=float(data.get("confidence", 0.0)),
@@ -74,10 +89,12 @@ def review_from_json(provider: str, content: str) -> ModelReview:
 REVIEW_INSTRUCTIONS = """You are one independent reviewer in a dual-review system.
 Assess the objective and the supplied counterthought. Do not execute tools or claim
 that agreement proves truth. Return JSON only with: verdict, summary, action,
-claims, assumptions, evidence, risks, critical_vetoes, confidence. verdict must be
+claims, assumptions, evidence, evidence_links, risks, critical_vetoes, confidence. verdict must be
 approve, revise, request_evidence, escalate_to_human, or reject. action must be null
-or an object with kind, target, and string-valued parameters. Approve only when the
-action is sufficiently evidenced, bounded, reversible where possible, and safe.
+or an object with kind, target, and string-valued parameters. evidence_links must
+contain claim, evidence_id, and excerpt_sha256 copied from the supplied evidence
+pack. Approve only when the action is sufficiently evidenced, bounded, reversible
+where possible, and safe. Never invent an evidence ID, excerpt, or hash.
 """
 
 

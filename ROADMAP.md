@@ -37,8 +37,10 @@ still need repetition against the selected inference servers.
 - [Implemented in orchestration] Add a single second round in which reviewers
   see concise structured claims, evidence, risks, vetoes, and proposed action
   from the other side, but never free-form summaries or private chain-of-thought.
-- Add evidence objects with local document identity, import time, excerpt hash,
-  and claim linkage.
+- [Implemented in strict orchestration mode] Add evidence objects with local
+  document identity, import time, exact document and excerpt hashes, pack
+  fingerprint, and claim linkage. Source-quality scoring and corroboration
+  remain open research tasks.
 - Add signed model manifests and explicit budgets for tokens, rounds, latency,
   energy, memory, and storage.
 
