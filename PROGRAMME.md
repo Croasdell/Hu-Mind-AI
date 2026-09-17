@@ -307,6 +307,11 @@ The next increment is:
 6. use `CONSORTIUM_CONCEPT_NOTE.md` to recruit the first three to five research
    partners and independent journal-checkpoint holders.
 
+In parallel, the Gate-3 memory foundation now supports provenance, visible
+conflicts, append-only correction/retraction, decay, and expiry. It remains
+disconnected from model retrieval until the H4 poisoning and stateless-baseline
+protocol is frozen; implementation alone is not evidence of improved learning.
+
 ## Evidence base
 
 - Expert-system builders documented brittleness and the knowledge-acquisition

@@ -121,7 +121,10 @@ or evaluation quality, is the limiting factor.
 
 ## Phase 5: learning and generalization
 
-- Add provenance-aware long-term memory and controlled skill acquisition.
+- [Foundation implemented] Add provenance-aware event-sourced memory with
+  visible conflicts, append-only correction/retraction, deterministic decay,
+  expiry, and human authority over semantic/procedural writes. Retrieval and
+  controlled skill acquisition remain open.
 - Evaluate transfer to unfamiliar task families and simulated environments.
 - Test catastrophic forgetting, poisoning, rollback, interruption, and
   shutdown.

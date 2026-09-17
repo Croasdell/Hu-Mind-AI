@@ -31,6 +31,18 @@ then turn that result into a Hu-Mind test.
   critique round if it increases false consensus without a preregistered net
   benefit.
 
+## Current architecture risk — provenance laundering
+
+- **Failure pattern:** a false or malicious document can be hashed correctly,
+  causing a system to treat traceable information as true and repeat it through
+  long-term memory.
+- **Lesson for Hu-Mind:** separate integrity from credibility, keep conflicting
+  memories visible, gate semantic/procedural writes and corrections through
+  human authority, and never let memory grant action permission.
+- **Falsification test:** introduce adversarial but validly imported sources and
+  measure poisoning, persistence, conflict detection, correction retention, and
+  rollback against the stateless baseline.
+
 ## Project failure record template
 
 Every abandoned or materially revised hypothesis gets an entry:

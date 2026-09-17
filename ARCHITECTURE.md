@@ -107,6 +107,18 @@ an authorization object; it does not presently execute anything.
 Experiments can record structured events as JSON Lines. API keys, hidden model
 reasoning, and sensitive raw prompts must not be written to the audit log.
 
+### 7. Controlled memory
+
+The initial long-term memory layer is event-sourced over the verified audit
+journal. Every entry cites an available evidence pack. Active contradictions
+remain visible; corrections and retractions append events rather than rewriting
+history; confidence decay and expiry affect recall without deleting records.
+
+Semantic and procedural changes require human approval. Procedural memories are
+descriptions only and have no action authority. This foundation is not yet fed
+back into reviewer prompts: retrieval, poisoning evaluation, rollback, and the
+H4 stateless comparison must be completed before claiming a learning benefit.
+
 ## Deliberation sequence
 
 ```text

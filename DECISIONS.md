@@ -152,3 +152,19 @@ append-only; later decisions may supersede but do not erase earlier reasoning.
   only about 7.6 GiB system RAM, so it is suitable for software foundations but
   not the real two-model trial.
 - **Affected hypotheses/gates:** H1, H5, H6, Gates 1-2 and hardware funding.
+
+## D-0011 — Make durable learning append-only and human-authorized
+
+- **Status:** accepted as the H4 foundation
+- **Decision:** Store episodic, semantic, procedural, and audit memory as
+  provenance-linked events. Preserve contradictions; represent correction and
+  retraction as new events; apply deterministic decay/expiry only in the active
+  view; require human approval for semantic/procedural writes and all changes.
+- **Reason:** in-place belief updates hide history and allow poisoned model output
+  to become durable self-modification.
+- **Safety boundary:** memory is data and grants no tool, action, or permission.
+  A valid hash proves source identity, not truth.
+- **Affected hypotheses/gates:** H4, Gate 3, and the action-control invariant.
+- **Falsification condition:** remove or redesign memory if preregistered tests
+  show marginal transfer, weak correction retention, unacceptable poisoning,
+  catastrophic forgetting, or excessive retrieval/resource cost.
