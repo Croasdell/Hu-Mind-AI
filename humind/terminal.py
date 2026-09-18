@@ -3,7 +3,12 @@
 from __future__ import annotations
 
 import argparse
+from .action_gate import ActionGate
+from .benchmark import DeterministicBenchmarkReviewer, run_benchmark
+from .deliberation import DeliberationEngine
 from .pipeline import Candidate, Review, review_candidates
+from .providers.mock import MockReviewer
+from .schemas import ModelReview, ProposedAction, Verdict
 
 
 RESET = "\033[0m"
@@ -76,11 +81,77 @@ def run_once(brief: str, *, colour: bool = True) -> str:
     return "\n".join(output)
 
 
+def run_dual_demo(objective: str) -> str:
+    """Run the new architecture without network calls or credentials."""
+
+    action = ProposedAction(
+        kind="run_experiment",
+        target="dual-review-benchmark",
+        parameters=(("objective", " ".join(objective.split())),),
+    )
+    reviewers = []
+    for provider in ("kimi", "openai"):
+        reviewers.append(
+            MockReviewer(
+                ModelReview(
+                    provider=provider,
+                    verdict=Verdict.APPROVE,
+                    summary="A bounded experiment is preferable to immediate deployment.",
+                    action=action,
+                    evidence=("versioned benchmark specification",),
+                    risks=("API cost", "provider correlation"),
+                    confidence=0.82,
+                )
+            )
+        )
+    result = DeliberationEngine(reviewers[0], reviewers[1]).deliberate(objective)
+    authorization = ActionGate({"run_experiment"}).authorize(
+        result.consensus,
+        human_approved=False,
+    )
+    lines = [
+        "Hu-Mind offline dual-review demonstration",
+        f"Objective: {result.objective}",
+        f"Shadow probe: {result.probe.text}",
+    ]
+    lines.extend(
+        f"{review.provider}: {review.verdict.value} ({review.confidence:.2f}) — {review.summary}"
+        for review in result.reviews
+    )
+    lines.extend(
+        [
+            f"Consensus: {'approved' if result.consensus.approved else result.consensus.status.value}",
+            f"Action fingerprint: {result.consensus.action.fingerprint if result.consensus.action else 'none'}",
+            f"Execution authorized: {authorization.allowed}",
+            "Gate note: human approval remains required.",
+        ]
+    )
+    return "\n".join(lines)
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Hu-Mind creative and logic loop")
     parser.add_argument("brief", nargs="?", help="brief to explore")
     parser.add_argument("--no-colour", action="store_true")
+    parser.add_argument("--dual-demo", action="store_true", help="run the offline dual-review demo")
+    parser.add_argument(
+        "--benchmark-smoke",
+        action="store_true",
+        help="run the 100-task deterministic infrastructure benchmark",
+    )
     args = parser.parse_args(argv)
+    if args.benchmark_smoke:
+        engine = DeliberationEngine(
+            DeterministicBenchmarkReviewer("fixture-left"),
+            DeterministicBenchmarkReviewer("fixture-right"),
+        )
+        print(run_benchmark(engine).to_json())
+        return 0
+    if args.dual_demo:
+        if not args.brief:
+            parser.error("--dual-demo requires a brief")
+        print(run_dual_demo(args.brief))
+        return 0
     if args.brief:
         print(run_once(args.brief, colour=not args.no_colour))
         return 0
