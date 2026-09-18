@@ -44,17 +44,20 @@ The logic side should remain independently testable and should not blindly
 trust generated text. “Unfiltered” is not a quality guarantee: Hu-Mind keeps
 review, provenance, and human approval for consequential actions.
 
-## Initial layout
+## Repository guide
 
 ```text
-humind/
-  __init__.py       package version
-  __main__.py       python -m humind entry point
-  pipeline.py       candidate and review data structures
-  terminal.py       splash screen and interactive loop
-tests/              deterministic regression tests
-pyproject.toml      package metadata and humind command
+humind/          orchestration, providers, evidence, memory, and safety gates
+tests/           deterministic regression and failure-path tests
+ARCHITECTURE.md  system boundaries and threat model
+PROGRAMME.md     staged research and funding programme
+EXPERIMENTS.md   falsifiable hypotheses and result process
+ROADMAP.md       implementation and evaluation gates
 ```
+
+Supporting documents cover the capability dataset, offline deployment,
+hardware evidence, controlled memory, cooperation model, and programme decision
+history. They are research plans rather than claims of demonstrated AGI.
 
 ## Current status
 
@@ -171,15 +174,27 @@ does not reverse-engineer, reproduce, or redistribute Venice.ai proprietary
 code, prompts, data, or hosted-service internals. Check each model's license
 before commercial deployment.
 
-## Roadmap
+## Next milestones
 
 - Connect two distinct local models through verified manifests.
 - Reproduce the deployment under an egress-deny firewall on a second machine.
-- Add a bounded second critique-and-revision round.
-- Add claim-linked evidence and citation verification.
-- Build the 100-task evaluation set and single-model baselines.
-- Measure correctness, false consensus, risk recall, cost, and latency.
+- Freeze an independently authored capability dataset and blinded labels.
+- Run the preregistered single-model and dual-review comparisons.
+- Measure correctness, false consensus, risk recall, latency, energy, and memory.
+- Execute the H4 transfer and poisoning protocol with real local models.
 - Run a narrow supervised pilot before considering tool execution.
 
-The next build should run the first live dual-review experiment through the
-existing deterministic consensus and human-approval boundaries.
+The next major evidence milestone is the first live, reproducible dual-review
+experiment through the existing consensus and human-approval boundaries.
+
+## Project status
+
+Hu-Mind AI is an independent research prototype. It is not AGI, is not suitable
+for consequential autonomous decisions, and currently has no tool-execution
+authority. Contributions should preserve those boundaries and distinguish
+implemented controls from proposed experiments.
+
+## License
+
+No licence file is currently included. Until one is added, normal copyright
+restrictions apply.
