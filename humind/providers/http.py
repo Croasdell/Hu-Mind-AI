@@ -96,7 +96,6 @@ def post_json(
             url = network_policy.validate_url(url)
         except OfflinePolicyError as exc:
             raise ProviderError(f"endpoint is outside the offline boundary: {exc}") from exc
-
     headers = {"Content-Type": "application/json"}
     if api_key:
         headers["Authorization"] = f"Bearer {api_key}"

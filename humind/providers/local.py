@@ -116,7 +116,7 @@ class LocalReviewer:
             payload,
             timeout=self.budget.timeout_seconds,
             network_policy=self._network_policy,
-            max_response_bytes=self.budget.max_response_bytes,
+            max_response_bytes=self.budget.max_response_bytes
         )
         elapsed = time.monotonic() - started
         if elapsed > self.budget.timeout_seconds:
