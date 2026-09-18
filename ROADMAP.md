@@ -119,6 +119,12 @@ must connect compute to a specific experiment:
 Hardware purchase should follow evidence that compute, rather than architecture
 or evaluation quality, is the limiting factor.
 
+Current activity: guidance emails were sent on 2026-09-18 to NVIDIA Inception,
+UKRI AIRR, and the University of Bath AI partnerships team. No response,
+eligibility decision, partnership, compute allocation, or funding award has yet
+been recorded. The next funding deliverable is a short evidence pack based on
+measured SIMBA-server workloads, not a speculative large-hardware request.
+
 ## Phase 5: learning and generalization
 
 - [Foundation implemented] Add provenance-aware event-sourced memory with

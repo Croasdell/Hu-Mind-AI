@@ -1,14 +1,21 @@
 # Evidence-Gated Offline Hardware Plan
 
 Status: procurement framework, not a purchase authorization or vendor quote.  
-Last specification review: 2026-09-17.
+Last specification review: 2026-09-18.
 
 ## Current host observation
 
-The present development machine exposes Intel HD Graphics 620 integrated
-graphics, approximately 7.6 GiB system RAM, and no `nvidia-smi` device. It can
-run orchestration, fixtures, dataset validation, and audit tests, but it is not
-a credible host for the two-model Gate-1 experiment.
+The development laptop exposes an Intel Core i7-7500U, Intel HD Graphics 620,
+approximately 7.6 GiB system RAM, and no `nvidia-smi` device. It can run
+orchestration, fixtures, dataset validation, and audit tests, but it is not a
+credible host for the two-model Gate-1 experiment.
+
+A separate SIMBA inference server is reported by the operator to contain an
+NVIDIA RTX 2080 Ti with 11 GB VRAM, 32 GB system RAM, and an AMD Ryzen 5 CPU.
+It normally serves `qwen2.5-coder:7b` through Ollama. The server was powered off
+during this documentation update, so the exact CPU, driver, runtime, power,
+storage, and measured performance remain unverified. Treat it as a Stage-A
+measurement node, not as a passed Gate-1 system.
 
 This observation is local machine state, not a permanent project assumption.
 It must be remeasured on every proposed evaluation node.
@@ -60,6 +67,12 @@ Use partner, university, vendor, or short-term hosted hardware only as a
 provisioning and sizing environment. Keep this study separate from the final
 air-gapped result. Run the exact model revision, quantization, context, batch,
 and server intended for the offline node.
+
+The first Stage-A run should use the existing SIMBA server sequentially: verify
+its manifest, run one model at a time within the 11 GB VRAM limit, capture
+Ollama prompt/evaluation counts and durations, then test whether two distinct
+small quantized models can be scheduled without hidden fallback or memory
+pressure. No larger purchase is justified before this baseline exists.
 
 Exit evidence:
 
@@ -115,3 +128,8 @@ This turns “we need a lot of hardware for AGI” into an auditable request for
 specific falsifiable experiment. Quotes, availability, export controls, and
 electricity costs are time- and location-dependent and must be refreshed when
 procurement authority exists.
+
+Initial guidance requests were sent on 2026-09-18 to NVIDIA Inception, UKRI
+AIRR, and the University of Bath AI partnerships team. These are outreach
+actions only; they are not applications, endorsements, partnerships, compute
+awards, or funding commitments. See `OUTREACH.md`.

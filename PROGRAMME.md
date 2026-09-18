@@ -297,20 +297,26 @@ passed Gate 1 or evidence of AGI.
 
 The next increment is:
 
-1. select two genuinely different open-weight models after licence and hardware
+1. power on and measure the SIMBA RTX 2080 Ti server, including exact hardware,
+   runtime, tokens, throughput, memory, energy, and thermal behavior;
+2. harden SIMBAX context selection and add Ollama telemetry before using it for
+   bounded Hu-Mind implementation tasks;
+3. select two genuinely different open-weight models after licence and hardware
    review, then create their production manifests;
-2. freeze real E1 and E5 capability datasets and preregister their plans;
-3. deploy both model servers on an egress-denied host or isolated LAN;
-4. collect correctness, false-consensus, latency, memory, energy, and failure
+4. freeze real E1 and E5 capability datasets and preregister their plans;
+5. deploy both model servers on an egress-denied host or isolated LAN;
+6. collect correctness, false-consensus, latency, memory, energy, and failure
    data rather than buying larger hardware on estimates alone;
-5. reproduce the run on a second machine under an independent operator;
-6. use `CONSORTIUM_CONCEPT_NOTE.md` to recruit the first three to five research
+7. reproduce the run on a second machine under an independent operator;
+8. use `CONSORTIUM_CONCEPT_NOTE.md` and the outreach record to recruit the first
+   three to five research
    partners and independent journal-checkpoint holders.
 
 In parallel, the Gate-3 memory foundation now supports provenance, visible
-conflicts, append-only correction/retraction, decay, and expiry. It remains
-disconnected from model retrieval until the H4 poisoning and stateless-baseline
-protocol is frozen; implementation alone is not evidence of improved learning.
+conflicts, append-only correction/retraction, decay, expiry, and opt-in budgeted
+retrieval as explicitly untrusted model context. The H4 poisoning and
+stateless-baseline protocol is still a draft; implementation alone is not
+evidence of improved learning.
 
 ## Evidence base
 

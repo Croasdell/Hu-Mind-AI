@@ -20,6 +20,8 @@ Hardware selection and funding evidence are governed by [HARDWARE_PLAN.md](HARDW
 The controlled Gate-3 memory boundary is specified in [MEMORY.md](MEMORY.md).
 The draft transfer, conflict, and poisoning experiment is in
 [H4_PROTOCOL.md](H4_PROTOCOL.md).
+Current partnership and funding approaches are recorded in
+[OUTREACH.md](OUTREACH.md).
 
 The name means **Human Mind AI**. The design is inspired by complementary
 creative and analytical thinking—not by copying any proprietary service.
@@ -79,6 +81,13 @@ for a Kimi/OpenAI dual-review experiment:
 - Kimi and OpenAI API adapters that are inactive until configured;
 - a manifest-verified local provider that rejects non-allowlisted endpoints;
 - offline mocks, audit support, and regression tests.
+
+The available development setup is now split across two machines: a lightweight
+laptop for orchestration and an offline-capable SIMBA server reported to contain
+an RTX 2080 Ti, 32 GB RAM, and an AMD Ryzen 5 CPU. The server specification and
+exact CPU model must be re-verified when it is next powered on. SIMBAX may help
+write bounded components, but its patches remain subject to tests, independent
+review, and human approval.
 
 Hu-Mind does not currently edit files, execute shell commands, or publish
 actions. Read [ARCHITECTURE.md](ARCHITECTURE.md) for the design and threat model,
@@ -176,6 +185,9 @@ before commercial deployment.
 
 ## Next milestones
 
+- Measure the SIMBA server and add exact token, throughput, VRAM, RAM, energy,
+  and temperature telemetry.
+- Harden SIMBAX project-context exclusions before it handles Hu-Mind source.
 - Connect two distinct local models through verified manifests.
 - Reproduce the deployment under an egress-deny firewall on a second machine.
 - Freeze an independently authored capability dataset and blinded labels.
@@ -186,6 +198,10 @@ before commercial deployment.
 
 The next major evidence milestone is the first live, reproducible dual-review
 experiment through the existing consensus and human-approval boundaries.
+
+The development strategy is hybrid: use local SIMBAX inference for bounded,
+high-volume implementation work and reserve stronger external models for
+architecture, difficult failures, security review, and final verification.
 
 ## Project status
 
