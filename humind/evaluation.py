@@ -116,6 +116,7 @@ class EvaluationReport:
     provider_latency_seconds: float
     tokens_per_provider_second: float
     telemetry_coverage_rate: float
+    input_context_trace_sha256: str
     measured_energy_wh: float | None
     peak_accelerator_memory_gb: float | None
     peak_host_memory_gb: float | None
@@ -216,6 +217,7 @@ def score_results(
     negative_total = positive_total = 0
     prompt_tokens = completion_tokens = total_tokens = telemetry_count = review_count = 0
     provider_latency = 0.0
+    context_trace = []
     for task, result in zip(dataset.tasks, results):
         if result.objective != task.objective:
             raise EvaluationError(f"result order/objective mismatch for {task.task_id}")
@@ -250,6 +252,14 @@ def score_results(
             completion_tokens += review.telemetry.completion_tokens
             total_tokens += review.telemetry.total_tokens
             provider_latency += review.telemetry.latency_seconds
+            context_trace.append(
+                {
+                    "provider": review.provider,
+                    "model_id": review.telemetry.model_id,
+                    "evidence_pack_sha256": review.telemetry.evidence_pack_sha256,
+                    "memory_context_sha256": review.telemetry.memory_context_sha256,
+                }
+            )
     measurements = resources or ResourceMeasurements()
     return EvaluationReport(
         configuration_id=configuration_id,
@@ -269,6 +279,9 @@ def score_results(
         provider_latency_seconds=round(provider_latency, 6),
         tokens_per_provider_second=_rate(total_tokens, provider_latency),
         telemetry_coverage_rate=_rate(telemetry_count, review_count),
+        input_context_trace_sha256=hashlib.sha256(
+            json.dumps(context_trace, sort_keys=True, separators=(",", ":")).encode("utf-8")
+        ).hexdigest(),
         measured_energy_wh=measurements.measured_energy_wh,
         peak_accelerator_memory_gb=measurements.peak_accelerator_memory_gb,
         peak_host_memory_gb=measurements.peak_host_memory_gb,

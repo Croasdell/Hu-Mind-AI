@@ -64,14 +64,20 @@ an implicit database update.
 
 The memory ledger has no tools, executor, provider credentials, or action gate.
 A procedural memory cannot grant permission, expand the action allowlist, or
-satisfy human approval. When memory is later included in a model context, it
-must be labelled untrusted retrieved data and remain subject to evidence,
-consensus, policy, and human gates.
+satisfy human approval. Local reviewers can now receive an opt-in, deterministic
+retrieval context when a retriever and explicit `as_of` time are configured.
+Only active semantic and episodic entries are eligible. Retrieval is bounded by
+item and character budgets, includes every active variant of a selected conflict
+or none of them, and labels the JSON payload as untrusted data. The exact payload
+is fingerprinted in provider telemetry. It remains subject to evidence,
+consensus, policy, and human gates; its text is never interpreted as an
+instruction by the orchestration layer.
 
 ## H4 falsification programme
 
 The actual H4 experiment must compare a stateless configuration against this
-memory layer on held-out task families. It must preregister:
+memory layer on held-out task families. The draft protocol is
+[H4_PROTOCOL.md](H4_PROTOCOL.md). It must preregister:
 
 - transfer accuracy after controlled experiences;
 - retention of a human-approved correction;
@@ -90,7 +96,6 @@ place merely because it resembles human cognition.
 
 ## Still missing before Gate 3
 
-- retrieval integration with local reviewers;
 - encrypted storage and key lifecycle design;
 - source-quality and cross-source independence scores;
 - quotas, retention schedules, and denial-of-storage controls;

@@ -53,6 +53,8 @@ class InferenceTelemetry:
     completion_tokens: int
     total_tokens: int
     latency_seconds: float
+    evidence_pack_sha256: str | None = None
+    memory_context_sha256: str | None = None
 
     def __post_init__(self) -> None:
         if not self.model_id:
@@ -63,6 +65,12 @@ class InferenceTelemetry:
             raise ValueError("prompt and completion tokens must sum to total tokens")
         if not math.isfinite(self.latency_seconds) or self.latency_seconds < 0:
             raise ValueError("latency must be a finite non-negative number")
+        for digest in (self.evidence_pack_sha256, self.memory_context_sha256):
+            if digest is not None and (
+                len(digest) != 64
+                or any(character not in "0123456789abcdef" for character in digest)
+            ):
+                raise ValueError("context identities must be lowercase SHA-256 digests")
 
 
 @dataclass(frozen=True)

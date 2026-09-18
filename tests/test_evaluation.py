@@ -160,6 +160,7 @@ class EvaluationTests(unittest.TestCase):
         self.assertAlmostEqual(report.provider_latency_seconds, 20.0)
         self.assertAlmostEqual(report.tokens_per_provider_second, 120.0)
         self.assertEqual(report.telemetry_coverage_rate, 1.0)
+        self.assertEqual(len(report.input_context_trace_sha256), 64)
         self.assertEqual(report.measured_energy_wh, 50.0)
         self.assertEqual(report.peak_accelerator_memory_gb, 24.0)
         self.assertTrue(report.capability_evaluation)

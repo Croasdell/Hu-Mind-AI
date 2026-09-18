@@ -168,3 +168,18 @@ append-only; later decisions may supersede but do not erase earlier reasoning.
 - **Falsification condition:** remove or redesign memory if preregistered tests
   show marginal transfer, weak correction retention, unacceptable poisoning,
   catastrophic forgetting, or excessive retrieval/resource cost.
+
+## D-0012 — Retrieve memory as bounded untrusted context
+
+- **Status:** accepted as the H4 experimental boundary
+- **Decision:** Retrieval is opt-in and deterministic, includes only active
+  semantic and episodic entries, and obeys explicit item and character budgets.
+  If a conflicted subject is selected, every active variant is included or the
+  entire group is omitted.
+- **Reason:** silently selecting one belief would hide uncertainty, while
+  unbounded recall would make experiments irreproducible and inflate context.
+- **Safety boundary:** retrieved JSON is labelled untrusted data, cannot grant
+  action authority, and receives a context fingerprint in provider telemetry.
+- **Limit:** structural isolation does not prove that a real model will resist
+  instruction-like poisoned memory; H4 must test that empirically.
+- **Affected hypotheses/gates:** H4 and Gate 3.

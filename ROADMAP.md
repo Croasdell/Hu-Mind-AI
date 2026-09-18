@@ -123,8 +123,11 @@ or evaluation quality, is the limiting factor.
 
 - [Foundation implemented] Add provenance-aware event-sourced memory with
   visible conflicts, append-only correction/retraction, deterministic decay,
-  expiry, and human authority over semantic/procedural writes. Retrieval and
-  controlled skill acquisition remain open.
+  expiry, and human authority over semantic/procedural writes.
+- [Opt-in foundation implemented] Add deterministic budgeted retrieval for
+  semantic/episodic memory, whole-conflict inclusion, untrusted-data prompt
+  labelling, and per-inference context fingerprints.
+- Controlled skill acquisition remains open.
 - Evaluate transfer to unfamiliar task families and simulated environments.
 - Test catastrophic forgetting, poisoning, rollback, interruption, and
   shutdown.

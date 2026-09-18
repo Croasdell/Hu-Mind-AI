@@ -8,6 +8,7 @@ from enum import Enum
 import hashlib
 import json
 import math
+import re
 
 from .audit import AuditError, JsonlAuditLog
 from .evidence import EvidencePack
@@ -84,6 +85,35 @@ class RecalledMemory:
 class RecallResult:
     memories: tuple[RecalledMemory, ...]
     conflict_subjects: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class MemoryContextItem:
+    memory_id: str
+    kind: MemoryKind
+    subject: str
+    content: str
+    provenance_ids: tuple[str, ...]
+    evidence_pack_sha256: str
+    effective_confidence: float
+    conflicted: bool
+
+    def as_payload(self) -> dict:
+        value = asdict(self)
+        value["kind"] = self.kind.value
+        return value
+
+
+@dataclass(frozen=True)
+class MemoryContext:
+    items: tuple[MemoryContextItem, ...]
+
+    @property
+    def fingerprint(self) -> str:
+        return _digest({"items": [item.as_payload() for item in self.items]})
+
+    def as_payload(self) -> list[dict]:
+        return [item.as_payload() for item in self.items]
 
 
 class MemoryLedger:
@@ -267,3 +297,70 @@ class MemoryLedger:
             sorted(f"{memory_kind.value}:{memory_subject}" for (memory_kind, memory_subject), values in grouped.items() if len(values) > 1)
         )
         return RecallResult(tuple(active), conflicts)
+
+
+class MemoryRetriever:
+    """Deterministic lexical retrieval; procedural/audit memory is excluded."""
+
+    def __init__(self, ledger: MemoryLedger) -> None:
+        self.ledger = ledger
+
+    @staticmethod
+    def _terms(value: str) -> set[str]:
+        return set(re.findall(r"[a-z0-9]+", value.lower()))
+
+    def retrieve(
+        self,
+        query: str,
+        *,
+        as_of: str,
+        max_items: int = 8,
+        max_chars: int = 8_000,
+        half_life_days: float = 90.0,
+    ) -> MemoryContext:
+        if not query.strip() or max_items <= 0 or max_chars <= 0:
+            raise MemoryPolicyError("retrieval query and positive item/character budgets are required")
+        recalled = self.ledger.recall(as_of=as_of, half_life_days=half_life_days)
+        query_terms = self._terms(query)
+        conflict_keys = set(recalled.conflict_subjects)
+        groups: dict[str, list[tuple[float, MemoryContextItem]]] = {}
+        for memory in recalled.memories:
+            entry = memory.entry
+            if entry.kind not in {MemoryKind.EPISODIC, MemoryKind.SEMANTIC}:
+                continue
+            terms = self._terms(entry.subject + " " + entry.content)
+            overlap = len(query_terms.intersection(terms))
+            if not overlap:
+                continue
+            relevance = overlap / max(1, len(query_terms.union(terms)))
+            key = f"{entry.kind.value}:{entry.subject}"
+            item = MemoryContextItem(
+                entry.memory_id,
+                entry.kind,
+                entry.subject,
+                entry.content,
+                entry.provenance_ids,
+                entry.evidence_pack_sha256,
+                memory.effective_confidence,
+                key in conflict_keys,
+            )
+            groups.setdefault(key, []).append((relevance * memory.effective_confidence, item))
+
+        ranked_groups = []
+        for key, values in groups.items():
+            values.sort(key=lambda pair: pair[1].memory_id)
+            ranked_groups.append((max(score for score, _ in values), key, tuple(item for _, item in values)))
+        ranked_groups.sort(key=lambda group: (-group[0], group[1]))
+
+        selected: list[MemoryContextItem] = []
+        used_chars = 0
+        for _, _, items in ranked_groups:
+            encoded_size = sum(
+                len(json.dumps(item.as_payload(), sort_keys=True, separators=(",", ":")))
+                for item in items
+            )
+            if len(selected) + len(items) > max_items or used_chars + encoded_size > max_chars:
+                continue
+            selected.extend(items)
+            used_chars += encoded_size
+        return MemoryContext(tuple(selected))

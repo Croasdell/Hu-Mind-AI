@@ -115,9 +115,12 @@ remain visible; corrections and retractions append events rather than rewriting
 history; confidence decay and expiry affect recall without deleting records.
 
 Semantic and procedural changes require human approval. Procedural memories are
-descriptions only and have no action authority. This foundation is not yet fed
-back into reviewer prompts: retrieval, poisoning evaluation, rollback, and the
-H4 stateless comparison must be completed before claiming a learning benefit.
+descriptions only and have no action authority. Local providers can opt into a
+deterministic, budgeted retrieval context containing only semantic and episodic
+entries. Conflicted subjects are retrieved as a complete set or omitted, the
+payload is explicitly labelled untrusted, and its fingerprint is recorded in
+telemetry. Real-model poisoning evaluation, rollback, and the H4 stateless
+comparison must still be completed before claiming a learning benefit.
 
 ## Deliberation sequence
 
