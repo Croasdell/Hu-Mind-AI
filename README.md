@@ -111,6 +111,12 @@ re-verified when it is next powered on. SIMBAX may help write bounded
 components, but its patches remain subject to tests, independent review, and
 human approval.
 
+**Server note (2026-09-20):** SIMBA (`192.168.1.142`) and the Omarchy laptop
+both restarted at approximately 13:06–13:07 UK time. All SIMBA services are
+healthy again. The cause of the simultaneous restart is unproven and under
+investigation; no Hu-Mind-AI code, configuration, or inference state was
+changed as a result.
+
 Hu-Mind does not currently edit files, execute shell commands, or publish
 actions. Read [ARCHITECTURE.md](ARCHITECTURE.md) for the design and threat model,
 and [ROADMAP.md](ROADMAP.md) for the research, evaluation, pilot, and funding
